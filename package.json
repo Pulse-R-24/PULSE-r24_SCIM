@@ -1,0 +1,42 @@
+{
+  "name": "pulse-r24",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --concurrency 1",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "prisma:generate": "pnpm --filter @pulse-r24/database prisma generate",
+    "seed:roles": "node ./scripts/seed/seedRoles.js",
+    "seed:bootstrap": "node ./scripts/seed/seedBootstrap.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.0",
+    "@auth/core": "^0.34.3",
+    "@auth/prisma-adapter": "^2.11.2",
+    "@supabase/supabase-js": "^2.25.0",
+    "bullmq": "^3.0.0",
+    "file-type": "^18.0.0",
+    "pino": "^8.10.0",
+    "zod": "^3.24.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "turbo": "^1.10.0",
+    "prisma": "^5.10.0",
+    "typescript": "^5.5.0",
+    "ts-node": "^10.9.1"
+  }
+}

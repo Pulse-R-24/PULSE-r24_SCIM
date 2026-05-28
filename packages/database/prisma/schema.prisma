@@ -1,0 +1,249 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String      @id @default(uuid())
+  email           String      @unique
+  name            String?
+  avatar_url      String?
+  hashed_password String?
+  accounts        Account[]
+  sessions        Session[]
+  roles           UserRole[]
+  reports         Report[]    @relation("author_reports")
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  @@map("users")
+}
+
+model Account {
+  id                 String   @id @default(cuid())
+  user               User     @relation(fields: [userId], references: [id])
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  expires      DateTime
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Role {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  permissions RolePermission[]
+  users       UserRole[]
+  created_at  DateTime         @default(now())
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+  created_at  DateTime         @default(now())
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+  role   Role   @relation(fields: [roleId], references: [id])
+  roleId String
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  role         Role       @relation(fields: [roleId], references: [id])
+  roleId       String
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId String
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model Report {
+  id              String           @id @default(uuid())
+  title           String
+  slug            String           @unique
+  body_markdown   String
+  author          User?            @relation("author_reports", fields: [authorId], references: [id])
+  authorId        String?
+  status          WorkflowState    @relation(fields: [workflowStateId], references: [id])
+  workflowStateId String
+  revisions       ReportRevision[]
+  categories      ReportCategory[]
+  tags            ReportTag[]
+  media           Media[]
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+
+  @@index([title])
+  @@map("reports")
+}
+
+model ReportRevision {
+  id            String   @id @default(uuid())
+  report        Report   @relation(fields: [reportId], references: [id])
+  reportId      String
+  summary       String?
+  body_markdown String
+  created_by    User?    @relation(fields: [createdById], references: [id])
+  createdById   String?
+  created_at    DateTime @default(now())
+
+  @@map("report_revisions")
+}
+
+model Category {
+  id      String          @id @default(uuid())
+  name    String          @unique
+  reports ReportCategory[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id      String       @id @default(uuid())
+  name    String       @unique
+  reports ReportTag[]
+
+  @@map("tags")
+}
+
+model ReportCategory {
+  id         String   @id @default(uuid())
+  report     Report   @relation(fields: [reportId], references: [id])
+  reportId   String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+
+  @@unique([reportId, categoryId])
+  @@map("report_categories")
+}
+
+model ReportTag {
+  id       String @id @default(uuid())
+  report   Report @relation(fields: [reportId], references: [id])
+  reportId String
+  tag      Tag    @relation(fields: [tagId], references: [id])
+  tagId    String
+
+  @@unique([reportId, tagId])
+  @@map("report_tags")
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  bucket       String
+  path         String
+  mime_type    String
+  size         Int
+  uploaded_by  User?    @relation(fields: [uploadedById], references: [id])
+  uploadedById String?
+  created_at   DateTime @default(now())
+
+  @@index([bucket])
+  @@map("media")
+}
+
+model EvidenceFile {
+  id         String   @id @default(uuid())
+  report     Report   @relation(fields: [reportId], references: [id])
+  reportId   String
+  media      Media    @relation(fields: [mediaId], references: [id])
+  mediaId    String
+  note       String?
+  created_at DateTime @default(now())
+
+  @@map("evidence_files")
+}
+
+model Source {
+  id         String   @id @default(uuid())
+  name       String
+  url        String?
+  created_at DateTime @default(now())
+
+  @@map("sources")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  action     String
+  entity     String?
+  entityId   String?
+  meta       Json?
+  created_at DateTime @default(now())
+
+  @@index([actorId])
+  @@map("audit_logs")
+}
+
+model WorkflowState {
+  id      String  @id @default(uuid())
+  key     String  @unique
+  label   String
+  reports Report[]
+
+  @@map("workflow_states")
+}
+
+model ReviewComment {
+  id         String   @id @default(uuid())
+  report     Report   @relation(fields: [reportId], references: [id])
+  reportId   String
+  author     User?    @relation(fields: [authorId], references: [id])
+  authorId   String?
+  body       String
+  created_at DateTime @default(now())
+
+  @@map("review_comments")
+}

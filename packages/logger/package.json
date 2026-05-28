@@ -1,0 +1,6 @@
+{
+  "name": "@pulse-r24/logger",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts"
+}
