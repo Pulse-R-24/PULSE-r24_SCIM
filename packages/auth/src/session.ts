@@ -1,14 +1,15 @@
-import { getToken } from '@auth/core'
+import { getToken } from '@auth/core/jwt'
+import type { JWT } from '@auth/core/jwt'
 import { AuthSession } from './types'
 
-function normalizeSession(token: Record<string, any> | null): AuthSession | null {
+function normalizeSession(token: JWT | null): AuthSession | null {
   if (!token || !token.sub || !token.email) return null
 
   return {
     user: {
       id: token.sub,
       email: token.email,
-      name: token.name,
+      name: token.name ?? undefined,
       roles: Array.isArray(token.roles) ? token.roles : []
     },
     expires: token.exp ? new Date(token.exp * 1000).toISOString() : undefined
@@ -18,6 +19,7 @@ function normalizeSession(token: Record<string, any> | null): AuthSession | null
 export async function getServerSessionFromRequest(request: Request) {
   const token = await getToken({
     req: request,
+    salt: 'authjs.session-token',
     secret: process.env.AUTH_SECRET || '',
     raw: false
   })

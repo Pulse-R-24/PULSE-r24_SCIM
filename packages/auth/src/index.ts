@@ -1,6 +1,7 @@
 export { getPrismaAdapter } from './prismaAdapterImpl'
 export { getAuthOptions } from './createAuthOptions'
 export { authHandler } from './route'
+export { getAuthProviders } from './providers'
 export { getServerSessionFromRequest, getServerSessionFromHeaders } from './session'
 export { hasRole, hasAnyRole, hasPermission, requireRole, requirePermission } from './rbac'
 export { RoleName, PermissionName, AuthSession } from './types'

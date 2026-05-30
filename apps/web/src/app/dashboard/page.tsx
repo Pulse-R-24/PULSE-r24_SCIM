@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { getServerSessionFromHeaders, hasAnyRole, RoleName } from '@pulse-r24/auth'
 
 export default async function DashboardPage() {
-  const session = await getServerSessionFromHeaders(headers())
+  const session = await getServerSessionFromHeaders(new Headers(await headers()))
 
   if (!session) {
     redirect('/auth/signin')

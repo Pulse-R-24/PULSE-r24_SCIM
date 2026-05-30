@@ -1,6 +1,7 @@
 export interface UploadSignedUrl {
-  signedURL: string
-  expiresAt: string
+  signedUrl: string
+  token: string
+  path: string
 }
 
 export interface UploadMetadata {

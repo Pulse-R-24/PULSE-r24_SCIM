@@ -1,2 +1,2 @@
 export type { UploadSignedUrl, UploadMetadata } from './types'
-export { createSignedUploadUrl, persistUploadMetadata, validateMimeAndMagic } from './uploadService'
+export { createSignedUploadUrl, persistUploadMetadata, validateMimeAndMagic, downloadFileAsBuffer } from './uploadService'

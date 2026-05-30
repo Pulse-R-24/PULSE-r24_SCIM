@@ -15,6 +15,14 @@ export type PermissionName =
   | 'can_upload_media'
   | 'can_manage_settings'
   | 'can_view_analytics'
+  | 'can_create_reports'
+  | 'can_edit_reports'
+  | 'can_publish_reports'
+  | 'can_delete_reports'
+  | 'can_submit_reports'
+  | 'can_review_reports'
+  | 'can_approve_reports'
+  | 'can_archive_reports'
 
 export interface AuthUser {
   id: string

@@ -1,4 +1,4 @@
-import { createSignedUploadUrl } from '@pulse-r24/storage'
+import { createSignedUploadUrl, downloadFileAsBuffer, validateMimeAndMagic } from '@pulse-r24/storage'
 import { auditService } from '@pulse-r24/audit'
 import { uploadSignedUrlSchema, uploadCompleteSchema } from '../validators/uploadValidator'
 import * as repository from '../repositories/uploadRepository'
@@ -16,6 +16,17 @@ export async function registerUpload(input: UploadCompleteRequest, actorId?: str
     throw new Error('Upload metadata already exists for this path')
   }
 
+  // Download the uploaded object to validate MIME and size
+  const buffer = await downloadFileAsBuffer(parsed.bucket, parsed.path)
+
+  // Validate magic bytes / MIME
+  await validateMimeAndMagic(buffer, parsed.mimeType)
+
+  // Validate size matches the uploaded file
+  if (buffer.length !== parsed.size) {
+    throw new Error(`File size mismatch: expected ${parsed.size}, got ${buffer.length}`)
+  }
+
   const entry = await repository.createMediaEntry({
     ...parsed,
     uploadedById: actorId
@@ -23,7 +34,7 @@ export async function registerUpload(input: UploadCompleteRequest, actorId?: str
 
   await auditService.log({
     actorId,
-    action: 'MEDIA_UPLOADED',
+    action: 'upload',
     entity: 'MEDIA',
     entityId: entry.id,
     meta: {

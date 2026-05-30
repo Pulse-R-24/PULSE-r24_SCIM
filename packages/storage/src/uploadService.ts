@@ -25,7 +25,7 @@ export async function validateMimeAndMagic(buffer: Buffer, expectedMime: string)
 export async function createSignedUploadUrl(bucket: string, path: string, expiresIn = 60) {
   const { data, error } = await supabaseAdmin.storage
     .from(bucket)
-    .createSignedUploadUrl(path, expiresIn)
+    .createSignedUploadUrl(path, { upsert: false })
 
   if (error || !data) {
     throw new Error(error?.message || 'Unable to create signed upload URL')
@@ -46,4 +46,36 @@ export async function persistUploadMetadata(metadata: UploadMetadata) {
   }
 
   return data
+}
+
+export async function downloadFileAsBuffer(bucket: string, path: string) {
+  const { data, error } = await supabaseAdmin.storage.from(bucket).download(path)
+  if (error || !data) {
+    throw new Error(error?.message || 'Unable to download file from storage')
+  }
+
+  // data can be a Blob/ReadableStream/Node buffer depending on runtime
+  // Try common conversions to Buffer
+  if (typeof (data as any).arrayBuffer === 'function') {
+    const ab = await (data as any).arrayBuffer()
+    return Buffer.from(ab)
+  }
+
+  // Node: data may be a stream with a `stream()` or `getReader` interface
+  if (typeof (data as any).stream === 'function') {
+    const stream = (data as any).stream()
+    const chunks: Buffer[] = []
+    for await (const chunk of stream) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+    }
+    return Buffer.concat(chunks)
+  }
+
+  // Fallback: if it's already a Buffer
+  if (Buffer.isBuffer(data)) {
+    return data as Buffer
+  }
+
+  // Last resort: try to coerce to string and Buffer
+  return Buffer.from(String(data))
 }

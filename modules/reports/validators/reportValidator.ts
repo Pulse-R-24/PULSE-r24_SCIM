@@ -15,3 +15,8 @@ export const reportUpdateSchema = z.object({
   tagNames: z.array(z.string().min(1)).optional(),
   status: z.enum(['DRAFT', 'UNDER_REVIEW', 'PUBLISHED']).optional()
 })
+
+export const reportPublishSchema = z.object({
+  reportId: z.string().uuid(),
+  status: z.literal('PUBLISHED')
+})

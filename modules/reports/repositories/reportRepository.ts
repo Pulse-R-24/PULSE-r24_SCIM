@@ -95,3 +95,24 @@ export async function findDraftsByAuthor(authorId: string) {
     }
   })
 }
+
+export async function listReports(opts?: { skip?: number; take?: number; status?: string }) {
+  const where: any = {}
+  if (opts?.status) where.workflowState = { key: opts.status }
+
+  return prisma.report.findMany({
+    where,
+    skip: opts?.skip,
+    take: opts?.take,
+    orderBy: { updated_at: 'desc' },
+    include: {
+      revisions: true,
+      categories: { include: { category: true } },
+      tags: { include: { tag: true } }
+    }
+  })
+}
+
+export async function deleteReport(reportId: string) {
+  return prisma.report.delete({ where: { id: reportId } })
+}

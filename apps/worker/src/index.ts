@@ -1,13 +1,11 @@
-import { Queue, Worker, QueueScheduler } from 'bullmq'
+import Redis from 'ioredis'
+import { Queue, Worker } from 'bullmq'
 
 const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379'
-
-const connection = typeof redisUrl === 'string' ? { connection: { url: redisUrl } } : {}
-
+const redisConnection = new Redis(redisUrl)
 const queueName = 'pulse:jobs'
 
-const queue = new Queue(queueName, { connection: { url: redisUrl } })
-new QueueScheduler(queueName, { connection: { url: redisUrl } })
+const queue = new Queue(queueName, { connection: redisConnection })
 
 const worker = new Worker(
   queueName,
@@ -16,7 +14,7 @@ const worker = new Worker(
     console.log('Processing job', job.id, job.name)
     return { ok: true }
   },
-  { connection: { url: redisUrl } }
+  { connection: redisConnection }
 )
 
 worker.on('completed', (job) => {

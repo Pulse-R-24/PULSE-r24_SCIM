@@ -19,7 +19,7 @@ export async function createReport(input: ReportInput, authorId: string) {
 
   await auditService.log({
     actorId: authorId,
-    action: 'REPORT_CREATED',
+    action: 'report_create',
     entity: 'REPORT',
     entityId: report.id,
     meta: { title: report.title, status: parsed.status }
@@ -56,7 +56,7 @@ export async function updateReport(reportId: string, input: ReportUpdateInput, a
 
   await auditService.log({
     actorId,
-    action: 'REPORT_UPDATED',
+    action: 'report_edit',
     entity: 'REPORT',
     entityId: reportId,
     meta: {
@@ -75,4 +75,42 @@ export async function getReport(reportId: string) {
 
 export async function listDrafts(authorId: string) {
   return repo.findDraftsByAuthor(authorId)
+}
+
+export async function listReports(opts?: { skip?: number; take?: number; status?: string }) {
+  return repo.listReports(opts)
+}
+
+export async function publishReport(reportId: string, actorId: string) {
+  const existing = await repo.findReportById(reportId)
+  if (!existing) throw new Error('Report not found')
+
+  const updated = await repo.updateReportRecord(reportId, { status: 'PUBLISHED' })
+
+  await auditService.log({
+    actorId,
+    action: 'report_publish',
+    entity: 'REPORT',
+    entityId: reportId,
+    meta: { previousStatus: existing.workflowState?.key, newStatus: 'PUBLISHED' }
+  })
+
+  return updated
+}
+
+export async function deleteReport(reportId: string, actorId: string) {
+  const existing = await repo.findReportById(reportId)
+  if (!existing) throw new Error('Report not found')
+
+  const deleted = await repo.deleteReport(reportId)
+
+  await auditService.log({
+    actorId,
+    action: 'report_delete',
+    entity: 'REPORT',
+    entityId: reportId,
+    meta: { title: existing.title }
+  })
+
+  return deleted
 }

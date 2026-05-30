@@ -247,3 +247,27 @@ model ReviewComment {
 
   @@map("review_comments")
 }
+
+model ReviewAssignment {
+  id         String   @id @default(uuid())
+  report     Report   @relation(fields: [reportId], references: [id])
+  reportId   String
+  reviewer   User     @relation(fields: [reviewerId], references: [id])
+  reviewerId String
+  assigned_at DateTime @default(now())
+  completed_at DateTime?
+
+  @@map("review_assignments")
+}
+
+model WorkflowHistory {
+  id         String   @id @default(uuid())
+  report     Report   @relation(fields: [reportId], references: [id])
+  reportId   String
+  action     String
+  actorId    String?
+  meta       Json?
+  created_at DateTime @default(now())
+
+  @@map("workflow_history")
+}
