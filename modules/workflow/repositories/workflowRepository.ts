@@ -11,7 +11,14 @@ export async function completeReviewAssignment(assignmentId: string) {
 }
 
 export async function createWorkflowHistory(reportId: string, action: string, actorId?: string, meta?: any) {
-  return prisma.workflowHistory.create({ data: { reportId, action, actorId, meta } })
+  return prisma.workflowHistory.create({
+    data: {
+      reportId,
+      action,
+      actorId,
+      meta: meta ? JSON.stringify(meta) : null
+    }
+  })
 }
 
 export async function createReviewComment(reportId: string, authorId: string | undefined, body: string) {

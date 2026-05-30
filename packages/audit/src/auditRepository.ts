@@ -8,7 +8,7 @@ export async function createAuditLog(entry: AuditEntry) {
       action: entry.action,
       entity: entry.entity,
       entityId: entry.entityId,
-      meta: entry.meta,
+      meta: entry.meta ? JSON.stringify(entry.meta) : null,
       created_at: new Date()
     }
   })

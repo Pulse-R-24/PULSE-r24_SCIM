@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -16,7 +16,49 @@ model User {
   accounts        Account[]
   sessions        Session[]
   roles           UserRole[]
-  reports         Report[]    @relation("author_reports")
+  
+  // Relations to Report
+  reports           Report[]    @relation("author_reports")
+  reports_created   Report[]    @relation("report_created_by")
+  reports_updated   Report[]    @relation("report_updated_by")
+  reports_locked    Report[]    @relation("report_locked_by")
+  
+  // Relations to ReportRevision
+  revisions_created ReportRevision[] @relation("revision_created_by")
+
+  // Relations to Category
+  categories_created Category[]   @relation("category_created_by")
+  categories_updated Category[]   @relation("category_updated_by")
+
+  // Relations to Tag
+  tags_created      Tag[]         @relation("tag_created_by")
+  tags_updated      Tag[]         @relation("tag_updated_by")
+
+  // Relations to Media
+  media_uploaded    Media[]       @relation("media_uploaded_by")
+  media_updated     Media[]       @relation("media_updated_by")
+
+  // Relations to Evidence
+  evidence_created  Evidence[]    @relation("evidence_created_by")
+  evidence_updated  Evidence[]    @relation("evidence_updated_by")
+
+  // Relations to ReviewComment
+  comments_created  ReviewComment[] @relation("comment_created_by")
+  comments_updated  ReviewComment[] @relation("comment_updated_by")
+
+  // Relations to ReviewAssignment
+  assignments_assigned ReviewAssignment[] @relation("reviewer_assignments")
+  assignments_created  ReviewAssignment[] @relation("assignment_created_by")
+  assignments_updated  ReviewAssignment[] @relation("assignment_updated_by")
+
+  // Relations to WorkflowHistory
+  history_created   WorkflowHistory[] @relation("history_actor")
+  history_updated   WorkflowHistory[] @relation("history_updated_by")
+
+  // Notifications and Activity
+  notifications     Notification[]    @relation("user_notifications")
+  activities        ActivityFeed[]    @relation("activity_actor")
+
   created_at      DateTime    @default(now())
   updated_at      DateTime    @updatedAt
 
@@ -30,12 +72,12 @@ model Account {
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
+  refresh_token      String?
+  access_token       String?
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String?  @db.Text
+  id_token           String?
   session_state      String?
 
   @@unique([provider, providerAccountId])
@@ -113,14 +155,36 @@ model Report {
   title           String
   slug            String           @unique
   body_markdown   String
+  
   author          User?            @relation("author_reports", fields: [authorId], references: [id])
   authorId        String?
+  
   status          WorkflowState    @relation(fields: [workflowStateId], references: [id])
   workflowStateId String
+
   revisions       ReportRevision[]
   categories      ReportCategory[]
   tags            ReportTag[]
   media           Media[]
+  
+  comments        ReviewComment[]
+  assignments     ReviewAssignment[]
+  history         WorkflowHistory[]
+  evidence        Evidence[]       @relation("report_evidence")
+  evidenceFile    EvidenceFile[]
+
+  // Soft delete and audit tracking:
+  deleted_at      DateTime?
+  createdById     String?
+  created_by      User?            @relation("report_created_by", fields: [createdById], references: [id])
+  updatedById     String?
+  updated_by      User?            @relation("report_updated_by", fields: [updatedById], references: [id])
+
+  // Editing lock fields:
+  lockedById      String?
+  locked_by       User?            @relation("report_locked_by", fields: [lockedById], references: [id])
+  locked_at       DateTime?
+
   created_at      DateTime         @default(now())
   updated_at      DateTime         @updatedAt
 
@@ -134,7 +198,7 @@ model ReportRevision {
   reportId      String
   summary       String?
   body_markdown String
-  created_by    User?    @relation(fields: [createdById], references: [id])
+  created_by    User?    @relation("revision_created_by", fields: [createdById], references: [id])
   createdById   String?
   created_at    DateTime @default(now())
 
@@ -146,6 +210,15 @@ model Category {
   name    String          @unique
   reports ReportCategory[]
 
+  // Soft delete and audit tracking:
+  deleted_at  DateTime?
+  createdById String?
+  created_by  User?     @relation("category_created_by", fields: [createdById], references: [id])
+  updatedById String?
+  updated_by  User?     @relation("category_updated_by", fields: [updatedById], references: [id])
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
   @@map("categories")
 }
 
@@ -153,6 +226,15 @@ model Tag {
   id      String       @id @default(uuid())
   name    String       @unique
   reports ReportTag[]
+
+  // Soft delete and audit tracking:
+  deleted_at  DateTime?
+  createdById String?
+  created_by  User?     @relation("tag_created_by", fields: [createdById], references: [id])
+  updatedById String?
+  updated_by  User?     @relation("tag_updated_by", fields: [updatedById], references: [id])
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
   @@map("tags")
 }
@@ -185,9 +267,17 @@ model Media {
   path         String
   mime_type    String
   size         Int
-  uploaded_by  User?    @relation(fields: [uploadedById], references: [id])
+  uploaded_by  User?    @relation("media_uploaded_by", fields: [uploadedById], references: [id])
   uploadedById String?
   created_at   DateTime @default(now())
+
+  // tracking:
+  updatedById String?
+  updated_by  User?    @relation("media_updated_by", fields: [updatedById], references: [id])
+
+  evidence     Evidence[]
+  evidenceFile EvidenceFile[]
+  reports      Report[]
 
   @@index([bucket])
   @@map("media")
@@ -205,6 +295,28 @@ model EvidenceFile {
   @@map("evidence_files")
 }
 
+model Evidence {
+  id          String    @id @default(uuid())
+  reportId    String
+  report      Report    @relation("report_evidence", fields: [reportId], references: [id], onDelete: Cascade)
+  mediaId     String?
+  media       Media?    @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  url         String?   // external link
+  
+  // Soft delete and audit tracking:
+  deleted_at  DateTime?
+  createdById String?
+  created_by  User?     @relation("evidence_created_by", fields: [createdById], references: [id])
+  updatedById String?
+  updated_by  User?     @relation("evidence_updated_by", fields: [updatedById], references: [id])
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  @@map("evidence")
+}
+
 model Source {
   id         String   @id @default(uuid())
   name       String
@@ -220,7 +332,7 @@ model AuditLog {
   action     String
   entity     String?
   entityId   String?
-  meta       Json?
+  meta       String?
   created_at DateTime @default(now())
 
   @@index([actorId])
@@ -240,22 +352,33 @@ model ReviewComment {
   id         String   @id @default(uuid())
   report     Report   @relation(fields: [reportId], references: [id])
   reportId   String
-  author     User?    @relation(fields: [authorId], references: [id])
+  author     User?    @relation("comment_created_by", fields: [authorId], references: [id])
   authorId   String?
   body       String
   created_at DateTime @default(now())
+
+  // tracking:
+  updatedById String?
+  updated_by  User?    @relation("comment_updated_by", fields: [updatedById], references: [id])
+  updated_at  DateTime @updatedAt
 
   @@map("review_comments")
 }
 
 model ReviewAssignment {
-  id         String   @id @default(uuid())
-  report     Report   @relation(fields: [reportId], references: [id])
-  reportId   String
-  reviewer   User     @relation(fields: [reviewerId], references: [id])
-  reviewerId String
-  assigned_at DateTime @default(now())
+  id           String   @id @default(uuid())
+  report       Report   @relation(fields: [reportId], references: [id])
+  reportId     String
+  reviewer     User     @relation("reviewer_assignments", fields: [reviewerId], references: [id])
+  reviewerId   String
+  assigned_at  DateTime @default(now())
   completed_at DateTime?
+
+  // tracking:
+  createdById  String?
+  created_by   User?    @relation("assignment_created_by", fields: [createdById], references: [id])
+  updatedById  String?
+  updated_by   User?    @relation("assignment_updated_by", fields: [updatedById], references: [id])
 
   @@map("review_assignments")
 }
@@ -266,8 +389,44 @@ model WorkflowHistory {
   reportId   String
   action     String
   actorId    String?
-  meta       Json?
+  actor      User?    @relation("history_actor", fields: [actorId], references: [id])
+  meta       String?
   created_at DateTime @default(now())
+
+  // tracking:
+  updatedById String?
+  updated_by  User?    @relation("history_updated_by", fields: [updatedById], references: [id])
 
   @@map("workflow_history")
 }
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation("user_notifications", fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  body        String
+  read        Boolean  @default(false)
+  type        String   // e.g. "WORKFLOW_STATE_CHANGE", "ASSIGNMENT", "COMMENT"
+  meta        String?  // e.g. { reportId: "...", authorId: "..." }
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+model ActivityFeed {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actor      User?    @relation("activity_actor", fields: [actorId], references: [id], onDelete: Cascade)
+  action     String   // e.g., "created_report", "status_changed", "submitted_review"
+  entityType String   // e.g., "REPORT", "COMMENT", "MEDIA"
+  entityId   String?
+  meta       String?
+  created_at DateTime @default(now())
+
+  @@index([actorId])
+  @@map("activity_feed")
+}
+

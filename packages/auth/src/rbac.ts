@@ -7,17 +7,43 @@ const rolePermissions: Record<RoleName, PermissionName[]> = {
     'can_manage_users',
     'can_upload_media',
     'can_manage_settings',
-    'can_view_analytics'
+    'can_view_analytics',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_publish_reports',
+    'can_delete_reports',
+    'can_submit_reports',
+    'can_review_reports',
+    'can_approve_reports',
+    'can_archive_reports'
   ],
   [RoleName.ADMIN]: [
     'can_manage_users',
     'can_manage_settings',
-    'can_view_analytics'
+    'can_view_analytics',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_delete_reports',
+    'can_submit_reports',
+    'can_review_reports',
+    'can_approve_reports',
+    'can_archive_reports'
   ],
   [RoleName.ANALYST]: ['can_view_analytics'],
-  [RoleName.EDITOR]: ['can_publish', 'can_upload_media'],
+  [RoleName.EDITOR]: [
+    'can_publish',
+    'can_upload_media',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_submit_reports',
+    'can_review_reports'
+  ],
   [RoleName.FACT_CHECKER]: ['can_view_analytics'],
-  [RoleName.PUBLISHER]: ['can_publish'],
+  [RoleName.PUBLISHER]: [
+    'can_publish',
+    'can_publish_reports',
+    'can_archive_reports'
+  ],
   [RoleName.VIEWER]: []
 }
 

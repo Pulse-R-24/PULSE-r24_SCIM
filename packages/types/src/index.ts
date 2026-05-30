@@ -15,6 +15,14 @@ export type PermissionName =
   | 'can_upload_media'
   | 'can_manage_settings'
   | 'can_view_analytics'
+  | 'can_create_reports'
+  | 'can_edit_reports'
+  | 'can_publish_reports'
+  | 'can_delete_reports'
+  | 'can_submit_reports'
+  | 'can_review_reports'
+  | 'can_approve_reports'
+  | 'can_archive_reports'
 
 export interface User {
   id: string
@@ -24,7 +32,7 @@ export interface User {
   roles?: RoleName[]
 }
 
-export type WorkflowKey = 'DRAFT' | 'UNDER_REVIEW' | 'PUBLISHED'
+export type WorkflowKey = 'DRAFT' | 'UNDER_REVIEW' | 'CHANGES_REQUESTED' | 'APPROVED' | 'PUBLISHED' | 'ARCHIVED'
 
 export interface Report {
   id: string
@@ -35,6 +43,48 @@ export interface Report {
   workflowStateKey: WorkflowKey
   created_at: string
   updated_at: string
+  deleted_at?: string | null
+  createdById?: string | null
+  updatedById?: string | null
+  lockedById?: string | null
+  locked_at?: string | null
+  author?: User | null
+  comments?: ReviewComment[]
+  assignments?: ReviewAssignment[]
+  history?: WorkflowHistory[]
+  evidence?: Evidence[]
+}
+
+export interface ReviewComment {
+  id: string
+  reportId: string
+  authorId?: string | null
+  author?: User | null
+  body: string
+  created_at: string
+  updatedById?: string | null
+  updated_at?: string
+}
+
+export interface ReviewAssignment {
+  id: string
+  reportId: string
+  reviewerId: string
+  reviewer?: User
+  assigned_at: string
+  completed_at?: string | null
+  createdById?: string | null
+  updatedById?: string | null
+}
+
+export interface WorkflowHistory {
+  id: string
+  reportId: string
+  action: string
+  actorId?: string | null
+  actor?: User | null
+  meta?: any
+  created_at: string
 }
 
 export interface Media {
@@ -43,6 +93,45 @@ export interface Media {
   path: string
   mime_type: string
   size: number
-  uploadedById?: string
+  uploadedById?: string | null
   created_at: string
 }
+
+export interface Evidence {
+  id: string
+  reportId: string
+  mediaId?: string | null
+  media?: Media | null
+  title: string
+  description?: string | null
+  url?: string | null
+  created_at: string
+  updated_at: string
+  deleted_at?: string | null
+  createdById?: string | null
+  updatedById?: string | null
+}
+
+export interface Notification {
+  id: string
+  userId: string
+  title: string
+  body: string
+  read: boolean
+  type: string
+  meta?: any
+  created_at: string
+  updated_at: string
+}
+
+export interface ActivityFeed {
+  id: string
+  actorId?: string | null
+  actor?: User | null
+  action: string
+  entityType: string
+  entityId?: string | null
+  meta?: any
+  created_at: string
+}
+

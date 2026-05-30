@@ -13,8 +13,8 @@ export async function createReport(input: ReportInput, authorId: string) {
     status: parsed.status
   })
 
-  await repo.upsertReportCategories(report.id, parsed.categoryIds)
-  await repo.connectReportTags(report.id, parsed.tagNames)
+  await repo.upsertReportCategories(report.id, parsed.categoryIds, authorId)
+  await repo.connectReportTags(report.id, parsed.tagNames, authorId)
   await repo.createReportRevision(report.id, parsed.body_markdown, authorId)
 
   await auditService.log({
@@ -36,18 +36,24 @@ export async function updateReport(reportId: string, input: ReportUpdateInput, a
     throw new Error('Report not found')
   }
 
+  // Edit conflict/lock check
+  if (existing.lockedById && existing.lockedById !== actorId) {
+    throw new Error(`Conflict: Report is locked by ${existing.locked_by?.name || existing.lockedById}`)
+  }
+
   const updated = await repo.updateReportRecord(reportId, {
     title: parsed.title,
     body_markdown: parsed.body_markdown,
-    status: parsed.status
+    status: parsed.status,
+    updatedById: actorId
   })
 
   if (parsed.categoryIds) {
-    await repo.upsertReportCategories(reportId, parsed.categoryIds)
+    await repo.upsertReportCategories(reportId, parsed.categoryIds, actorId)
   }
 
   if (parsed.tagNames) {
-    await repo.connectReportTags(reportId, parsed.tagNames)
+    await repo.connectReportTags(reportId, parsed.tagNames, actorId)
   }
 
   if (parsed.body_markdown) {
@@ -69,6 +75,32 @@ export async function updateReport(reportId: string, input: ReportUpdateInput, a
   return updated
 }
 
+export async function acquireLock(reportId: string, actorId: string) {
+  const existing = await repo.findReportById(reportId)
+  if (!existing) throw new Error('Report not found')
+  
+  if (existing.lockedById && existing.lockedById !== actorId) {
+    // If lock is older than 5 minutes, we can allow breaking it. Otherwise throw error.
+    const lockAgeMs = Date.now() - new Date(existing.locked_at!).getTime()
+    if (lockAgeMs < 5 * 60 * 1000) {
+      throw new Error(`Report is currently locked by ${existing.locked_by?.name || 'another editor'}`)
+    }
+  }
+
+  return repo.acquireReportLock(reportId, actorId)
+}
+
+export async function releaseLock(reportId: string, actorId: string) {
+  const existing = await repo.findReportById(reportId)
+  if (!existing) throw new Error('Report not found')
+  
+  if (existing.lockedById && existing.lockedById !== actorId) {
+    throw new Error('You do not own the lock on this report')
+  }
+
+  return repo.releaseReportLock(reportId)
+}
+
 export async function getReport(reportId: string) {
   return repo.findReportById(reportId)
 }
@@ -85,7 +117,7 @@ export async function publishReport(reportId: string, actorId: string) {
   const existing = await repo.findReportById(reportId)
   if (!existing) throw new Error('Report not found')
 
-  const updated = await repo.updateReportRecord(reportId, { status: 'PUBLISHED' })
+  const updated = await repo.updateReportRecord(reportId, { status: 'PUBLISHED', updatedById: actorId })
 
   await auditService.log({
     actorId,
