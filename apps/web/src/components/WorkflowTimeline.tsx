@@ -11,7 +11,7 @@ interface HistoryEntry {
   action: string
   actorId?: string | null
   actor?: { name?: string | null; email: string } | null
-  meta?: any
+  meta?: string | { comment?: string } | null
   created_at: string
 }
 

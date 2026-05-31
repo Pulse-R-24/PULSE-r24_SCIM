@@ -44,10 +44,21 @@ export async function GET(req: NextRequest) {
   }
 
   const status = url.searchParams.get('status') || undefined
+  const assignedToMe = url.searchParams.get('assignedToMe') === 'true'
   const skip = url.searchParams.get('skip') ? Number(url.searchParams.get('skip')) : undefined
   const take = url.searchParams.get('take') ? Number(url.searchParams.get('take')) : undefined
 
-  const reports = await listReports({ status, skip, take })
+  let assignedReviewerId: string | undefined
+  if (assignedToMe) {
+    const session = await getServerSessionFromRequest(req)
+    if (!session) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+    requirePermission(session, 'can_review_reports')
+    assignedReviewerId = session.user.id
+  }
+
+  const reports = await listReports({ status, skip, take, assignedReviewerId })
   return NextResponse.json(reports)
 }
 

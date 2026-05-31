@@ -4,7 +4,8 @@ import { generateUploadUrl, registerUpload } from '@modules/uploads/services/upl
 
 export async function POST(req: NextRequest) {
   const session = await getServerSessionFromRequest(req)
-  requirePermission(session, 'can_upload_media')
+  if (!session) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  requirePermission(session, 'can_upload_evidence')
 
   const body = await req.json()
   const uploadUrl = await generateUploadUrl(body)
@@ -14,10 +15,11 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const session = await getServerSessionFromRequest(req)
-  requirePermission(session, 'can_upload_media')
+  if (!session) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  requirePermission(session, 'can_upload_evidence')
 
   const body = await req.json()
-  const upload = await registerUpload(body, session?.user?.id)
+  const upload = await registerUpload(body, session.user.id)
 
   return NextResponse.json(upload)
 }

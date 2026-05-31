@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 type Action = 'approve' | 'reject' | 'request-changes'
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline'
 
 async function postWorkflowAction(action: Action, reportId: string, comment?: string) {
   const endpoint = `/api/reports/workflow/${action}`
@@ -45,7 +46,7 @@ export function ReviewActions({ reportId, reportTitle, onSuccess }: ReviewAction
     },
   })
 
-  const actions: { key: Action; label: string; icon: React.ReactNode; variant: any; needsComment: boolean }[] = [
+  const actions: { key: Action; label: string; icon: React.ReactNode; variant: ButtonVariant; needsComment: boolean }[] = [
     {
       key: 'approve',
       label: 'Approve',

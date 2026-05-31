@@ -1,5 +1,15 @@
 import prisma from '@pulse-r24/database/src/client'
 
+function createSlug(title: string) {
+  const base = title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+  return `${base}-${Date.now()}`
+}
+
 export async function createReportRecord(data: {
   title: string
   body_markdown: string
@@ -9,10 +19,11 @@ export async function createReportRecord(data: {
   return prisma.report.create({
     data: {
       title: data.title,
+      slug: createSlug(data.title),
       body_markdown: data.body_markdown,
-      authorId: data.authorId,
-      createdById: data.authorId,
-      workflowState: {
+      author: { connect: { id: data.authorId } },
+      created_by: { connect: { id: data.authorId } },
+      status: {
         connect: { key: data.status }
       }
     }
@@ -74,10 +85,10 @@ export async function updateReportRecord(reportId: string, data: Partial<{ title
   if (data.title) updatePayload.title = data.title
   if (data.body_markdown) updatePayload.body_markdown = data.body_markdown
   if (data.status) {
-    updatePayload.workflowState = { connect: { key: data.status } }
+    updatePayload.status = { connect: { key: data.status } }
   }
   if (data.updatedById) {
-    updatePayload.updatedById = data.updatedById
+    updatePayload.updated_by = { connect: { id: data.updatedById } }
   }
 
   return prisma.report.update({
@@ -91,6 +102,7 @@ export async function findReportById(reportId: string) {
     where: { id: reportId, deleted_at: null },
     include: {
       revisions: { orderBy: { created_at: 'desc' } },
+      status: true,
       categories: { include: { category: true } },
       tags: { include: { tag: true } },
       evidence: { where: { deleted_at: null }, include: { media: true } },
@@ -102,7 +114,7 @@ export async function findReportById(reportId: string) {
 
 export async function findDraftsByAuthor(authorId: string) {
   return prisma.report.findMany({
-    where: { authorId, workflowState: { key: 'DRAFT' }, deleted_at: null },
+    where: { authorId, status: { key: 'DRAFT' }, deleted_at: null },
     include: {
       categories: { include: { category: true } },
       tags: { include: { tag: true } },
@@ -112,9 +124,17 @@ export async function findDraftsByAuthor(authorId: string) {
   })
 }
 
-export async function listReports(opts?: { skip?: number; take?: number; status?: string }) {
+export async function listReports(opts?: { skip?: number; take?: number; status?: string; assignedReviewerId?: string }) {
   const where: any = { deleted_at: null }
-  if (opts?.status) where.workflowState = { key: opts.status }
+  if (opts?.status) where.status = { key: opts.status }
+  if (opts?.assignedReviewerId) {
+    where.assignments = {
+      some: {
+        reviewerId: opts.assignedReviewerId,
+        completed_at: null
+      }
+    }
+  }
 
   return prisma.report.findMany({
     where,
@@ -123,10 +143,17 @@ export async function listReports(opts?: { skip?: number; take?: number; status?
     orderBy: { updated_at: 'desc' },
     include: {
       revisions: true,
+      status: true,
       categories: { include: { category: true } },
       tags: { include: { tag: true } },
       evidence: { where: { deleted_at: null } },
-      author: true
+      author: true,
+      assignments: {
+        include: {
+          reviewer: true
+        },
+        orderBy: { assigned_at: 'desc' }
+      }
     }
   })
 }
@@ -155,6 +182,20 @@ export async function releaseReportLock(reportId: string) {
       lockedById: null,
       locked_at: null
     }
+  })
+}
+
+export async function listCategories() {
+  return prisma.category.findMany({
+    where: { deleted_at: null },
+    orderBy: { name: 'asc' }
+  })
+}
+
+export async function listTags() {
+  return prisma.tag.findMany({
+    where: { deleted_at: null },
+    orderBy: { name: 'asc' }
   })
 }
 

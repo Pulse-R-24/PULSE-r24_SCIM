@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './client'
+import { getSupabaseAdmin } from './client'
 import type { UploadMetadata, UploadSignedUrl } from './types'
 import { fileTypeFromBuffer } from 'file-type'
 
@@ -23,6 +23,7 @@ export async function validateMimeAndMagic(buffer: Buffer, expectedMime: string)
 }
 
 export async function createSignedUploadUrl(bucket: string, path: string, expiresIn = 60) {
+  const supabaseAdmin = getSupabaseAdmin()
   const { data, error } = await supabaseAdmin.storage
     .from(bucket)
     .createSignedUploadUrl(path, { upsert: false })
@@ -35,6 +36,7 @@ export async function createSignedUploadUrl(bucket: string, path: string, expire
 }
 
 export async function persistUploadMetadata(metadata: UploadMetadata) {
+  const supabaseAdmin = getSupabaseAdmin()
   const { data, error } = await supabaseAdmin.storage.from(metadata.bucket).upload(metadata.path, metadata.fileBuffer, {
     contentType: metadata.mimeType,
     cacheControl: '3600',
@@ -49,6 +51,7 @@ export async function persistUploadMetadata(metadata: UploadMetadata) {
 }
 
 export async function downloadFileAsBuffer(bucket: string, path: string) {
+  const supabaseAdmin = getSupabaseAdmin()
   const { data, error } = await supabaseAdmin.storage.from(bucket).download(path)
   if (error || !data) {
     throw new Error(error?.message || 'Unable to download file from storage')

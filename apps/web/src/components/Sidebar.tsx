@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, ClipboardList, UserCheck, GitBranch,
   Bell, Activity, FileText, Shield, LogOut, Zap,
+  FilePlus2,
+  Archive,
+  Search,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -15,9 +18,12 @@ const NAV_ITEMS = [
   { label: 'Workflow History', href: '/dashboard/workflow-history',     icon: GitBranch },
   { label: 'Notifications',    href: '/dashboard/notifications',        icon: Bell },
   { label: 'Activity Feed',    href: '/dashboard/activity',             icon: Activity },
+  { label: 'Search',           href: '/dashboard/search',               icon: Search },
+  { label: 'Evidence Library',  href: '/dashboard/evidence',             icon: Archive },
 ] as const
 
 const SECONDARY_ITEMS = [
+  { label: 'New Report',       href: '/dashboard/reports/new',         icon: FilePlus2 },
   { label: 'Status Dashboard', href: '/dashboard/status',              icon: Shield },
   { label: 'My Reports',       href: '/dashboard/reports',             icon: FileText },
 ] as const

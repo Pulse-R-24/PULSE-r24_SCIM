@@ -20,11 +20,48 @@ export async function createEvidenceRecord(data: {
   })
 }
 
+export async function findEvidenceById(id: string) {
+  return prisma.evidence.findFirst({
+    where: { id, deleted_at: null },
+    include: {
+      media: true,
+      report: { include: { status: true, author: true } },
+      created_by: true
+    }
+  })
+}
+
+export async function findAllEvidence(filters?: { search?: string; reportId?: string }) {
+  return prisma.evidence.findMany({
+    where: {
+      deleted_at: null,
+      ...(filters?.reportId ? { reportId: filters.reportId } : {}),
+      ...(filters?.search
+        ? {
+            OR: [
+              { title: { contains: filters.search } },
+              { description: { contains: filters.search } },
+              { url: { contains: filters.search } },
+              { report: { title: { contains: filters.search } } }
+            ]
+          }
+        : {})
+    },
+    include: {
+      media: true,
+      report: { include: { status: true, author: true } },
+      created_by: true
+    },
+    orderBy: { created_at: 'desc' }
+  })
+}
+
 export async function findEvidenceByReport(reportId: string) {
   return prisma.evidence.findMany({
     where: { reportId, deleted_at: null },
     include: {
       media: true,
+      report: { include: { status: true, author: true } },
       created_by: true
     },
     orderBy: { created_at: 'desc' }

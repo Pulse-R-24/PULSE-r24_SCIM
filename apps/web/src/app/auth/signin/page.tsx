@@ -13,7 +13,7 @@ async function fetchCsrfToken() {
   return data.csrfToken as string | undefined
 }
 
-export default async function SignInPage({ searchParams }: { searchParams?: { error?: string } }) {
+export default async function SignInPage({ searchParams }: { searchParams?: Promise<{ error?: string }> }) {
   const requestHeaders = new Headers(await headers())
   const session = await getServerSessionFromHeaders(requestHeaders)
   if (session) {
@@ -28,7 +28,10 @@ export default async function SignInPage({ searchParams }: { searchParams?: { er
   }
 
   const csrfToken = await fetchCsrfToken()
-  const errorMessage = searchParams?.error ? 'Sign in failed. Please check your credentials and try again.' : undefined
+  const resolvedSearchParams = await searchParams
+  const errorMessage = resolvedSearchParams?.error
+    ? 'Sign in failed. Please check your credentials and try again.'
+    : undefined
 
   return (
     <div className="min-h-screen bg-[#081226] flex items-center justify-center p-6">

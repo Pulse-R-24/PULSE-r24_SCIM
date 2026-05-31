@@ -1,5 +1,7 @@
 import { reportCreateSchema, reportUpdateSchema } from '../validators/reportValidator'
 import * as repo from '../repositories/reportRepository'
+import { createWorkflowHistory } from '@modules/workflow/repositories/workflowRepository'
+import { logActivity } from '@modules/activities'
 import { auditService } from '@pulse-r24/audit'
 import type { ReportInput, ReportUpdateInput } from '../types'
 
@@ -16,6 +18,9 @@ export async function createReport(input: ReportInput, authorId: string) {
   await repo.upsertReportCategories(report.id, parsed.categoryIds, authorId)
   await repo.connectReportTags(report.id, parsed.tagNames, authorId)
   await repo.createReportRevision(report.id, parsed.body_markdown, authorId)
+  await createWorkflowHistory(report.id, 'DRAFT_CREATED', authorId, {
+    nextStatus: parsed.status
+  })
 
   await auditService.log({
     actorId: authorId,
@@ -23,6 +28,11 @@ export async function createReport(input: ReportInput, authorId: string) {
     entity: 'REPORT',
     entityId: report.id,
     meta: { title: report.title, status: parsed.status }
+  })
+
+  await logActivity(authorId, 'report_created', 'REPORT', report.id, {
+    title: report.title,
+    status: parsed.status
   })
 
   return report
@@ -67,9 +77,15 @@ export async function updateReport(reportId: string, input: ReportUpdateInput, a
     entityId: reportId,
     meta: {
       changes: parsed,
-      previousStatus: existing.workflowState?.key,
-      newStatus: parsed.status ?? existing.workflowState?.key
+      previousStatus: existing.status?.key,
+      newStatus: parsed.status ?? existing.status?.key
     }
+  })
+
+  await logActivity(actorId, 'report_updated', 'REPORT', reportId, {
+    title: parsed.title ?? existing.title,
+    previousStatus: existing.status?.key,
+    status: parsed.status ?? existing.status?.key
   })
 
   return updated
@@ -109,8 +125,17 @@ export async function listDrafts(authorId: string) {
   return repo.findDraftsByAuthor(authorId)
 }
 
-export async function listReports(opts?: { skip?: number; take?: number; status?: string }) {
+export async function listReports(opts?: { skip?: number; take?: number; status?: string; assignedReviewerId?: string }) {
   return repo.listReports(opts)
+}
+
+export async function listReportTaxonomy() {
+  const [categories, tags] = await Promise.all([
+    repo.listCategories(),
+    repo.listTags()
+  ])
+
+  return { categories, tags }
 }
 
 export async function publishReport(reportId: string, actorId: string) {
@@ -124,7 +149,7 @@ export async function publishReport(reportId: string, actorId: string) {
     action: 'report_publish',
     entity: 'REPORT',
     entityId: reportId,
-    meta: { previousStatus: existing.workflowState?.key, newStatus: 'PUBLISHED' }
+    meta: { previousStatus: existing.status?.key, newStatus: 'PUBLISHED' }
   })
 
   return updated

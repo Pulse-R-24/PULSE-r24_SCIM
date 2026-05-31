@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest) {
   if (body.all) {
     await markAllAsRead(session.user.id)
   } else if (body.id) {
-    await markNotificationAsRead(body.id)
+    await markNotificationAsRead(body.id, session.user.id)
   } else {
     return NextResponse.json({ error: 'id or all:true required' }, { status: 400 })
   }

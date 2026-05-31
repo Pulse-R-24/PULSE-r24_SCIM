@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSessionFromRequest, requirePermission } from '@pulse-r24/auth'
-import { attachEvidence, getReportEvidence, removeEvidence } from '@modules/evidence'
+import { attachEvidence, attachExistingEvidence, getReportEvidence, removeEvidence } from '@modules/evidence'
 
 export async function GET(
   req: NextRequest,
@@ -8,6 +8,7 @@ export async function GET(
 ) {
   const session = await getServerSessionFromRequest(req)
   if (!session) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  requirePermission(session, 'can_view_evidence')
 
   const { id } = await context.params
   const evidenceList = await getReportEvidence(id)
@@ -26,6 +27,15 @@ export async function POST(
   const { id } = await context.params
   const body = await req.json()
 
+  if (body.evidenceId) {
+    const evidence = await attachExistingEvidence({
+      reportId: id,
+      evidenceId: body.evidenceId,
+      userId: session.user.id
+    })
+    return NextResponse.json(evidence)
+  }
+
   const evidence = await attachEvidence({
     reportId: id,
     title: body.title,
@@ -39,13 +49,12 @@ export async function POST(
 }
 
 export async function DELETE(
-  req: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  req: NextRequest
 ) {
   const session = await getServerSessionFromRequest(req)
   if (!session) return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
 
-  requirePermission(session, 'can_edit_reports')
+  requirePermission(session, 'can_delete_evidence')
 
   const url = new URL(req.url)
   const evidenceId = url.searchParams.get('evidenceId')

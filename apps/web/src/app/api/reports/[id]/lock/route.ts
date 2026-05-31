@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSessionFromRequest, requirePermission } from '@pulse-r24/auth'
 import { acquireLock, releaseLock } from '@modules/reports/services/reportService'
 
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : 'Unknown error'
+}
+
 export async function POST(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -15,8 +19,8 @@ export async function POST(
   try {
     const report = await acquireLock(id, session.user.id)
     return NextResponse.json({ ok: true, lockedById: report.lockedById, locked_at: report.locked_at })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 409 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: getErrorMessage(error) }, { status: 409 })
   }
 }
 
@@ -33,7 +37,7 @@ export async function DELETE(
   try {
     await releaseLock(id, session.user.id)
     return NextResponse.json({ ok: true })
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 })
+  } catch (error: unknown) {
+    return NextResponse.json({ error: getErrorMessage(error) }, { status: 400 })
   }
 }

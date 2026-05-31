@@ -5,7 +5,7 @@ export async function createNotification(data: {
   title: string
   body: string
   type: string
-  meta?: any
+  meta?: Record<string, unknown>
 }) {
   return prisma.notification.create({
     data: {
@@ -30,9 +30,9 @@ export async function findNotificationsByUser(userId: string) {
   }))
 }
 
-export async function updateNotificationRead(id: string, read: boolean) {
-  return prisma.notification.update({
-    where: { id },
+export async function updateNotificationRead(id: string, userId: string, read: boolean) {
+  return prisma.notification.updateMany({
+    where: { id, userId },
     data: { read }
   })
 }
