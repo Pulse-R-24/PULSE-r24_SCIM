@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, ClipboardList, UserCheck, GitBranch,
-  Bell, Activity, FileText, Shield, LogOut, Zap,
+  Bell, Activity, LogOut, Zap,
   FilePlus2,
   Archive,
   Search,
@@ -26,59 +26,62 @@ const NAV_ITEMS = [
 
 const SECONDARY_ITEMS = [
   { label: 'New Report',       href: '/dashboard/reports/new',         icon: FilePlus2 },
-  { label: 'Status Dashboard', href: '/dashboard/status',              icon: Shield },
-  { label: 'My Reports',       href: '/dashboard/reports',             icon: FileText },
 ] as const
 
 export function Sidebar() {
   const pathname = usePathname()
+  const isActive = (href: string) => (href === '/dashboard' ? pathname === href : pathname === href || pathname.startsWith(href + '/'))
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col h-screen sticky top-0
+    <aside className="w-16 flex-shrink-0 flex flex-col h-screen sticky top-0 sm:w-64
                       bg-gradient-to-b from-[#060d1f] via-[#080f22] to-[#070c1a]
                       border-r border-[rgba(99,130,210,0.10)]">
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-[rgba(99,130,210,0.10)]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600
+      <div className="px-3 py-5 sm:px-5 border-b border-[rgba(99,130,210,0.10)]">
+        <div className="flex items-center justify-center gap-2.5 sm:justify-start">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-rose-700 to-red-950
                           flex items-center justify-center animate-pulse-glow">
             <Zap className="w-4 h-4 text-white" />
           </div>
-          <div>
+          <div className="hidden sm:block">
             <span className="text-sm font-bold text-white tracking-wide">PULSE</span>
-            <span className="text-sm font-bold text-blue-400">-R24</span>
+            <span className="text-sm font-bold text-rose-400">-R24</span>
           </div>
         </div>
-        <p className="text-[10px] text-slate-600 mt-0.5 pl-9">Intelligence Platform</p>
+        <p className="hidden text-[10px] text-slate-600 mt-0.5 pl-9 sm:block">Intelligence Platform</p>
       </div>
 
       {/* Primary nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest px-3 pb-2">
+      <nav className="flex-1 overflow-y-auto px-2 py-4 space-y-0.5 sm:px-3">
+        <p className="hidden text-[10px] font-semibold text-slate-600 uppercase tracking-widest px-3 pb-2 sm:block">
           Editorial
         </p>
         {NAV_ITEMS.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href || pathname.startsWith(href + '/')
+          const active = isActive(href)
           return (
             <Link key={href} href={href}
-              className={cn('nav-link', active && 'active')}>
+              className={cn('nav-link', active && 'active')}
+              aria-label={label}
+              title={label}>
               <Icon className="w-4 h-4 flex-shrink-0" />
-              <span>{label}</span>
+              <span className="hidden sm:inline">{label}</span>
             </Link>
           )
         })}
 
         <div className="pt-4 pb-2">
-          <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest px-3 pb-2">
+          <p className="hidden text-[10px] font-semibold text-slate-600 uppercase tracking-widest px-3 pb-2 sm:block">
             Reports
           </p>
           {SECONDARY_ITEMS.map(({ label, href, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(href + '/')
+            const active = isActive(href)
             return (
               <Link key={href} href={href}
-                className={cn('nav-link', active && 'active')}>
+                className={cn('nav-link', active && 'active')}
+                aria-label={label}
+                title={label}>
                 <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{label}</span>
+                <span className="hidden sm:inline">{label}</span>
               </Link>
             )
           })}
@@ -88,9 +91,11 @@ export function Sidebar() {
       {/* Footer */}
       <div className="px-3 py-4 border-t border-[rgba(99,130,210,0.10)]">
         <Link href="/api/auth/signout"
-          className="nav-link text-red-400/70 hover:text-red-400 hover:bg-red-500/5">
+          className="nav-link text-red-400/70 hover:text-red-400 hover:bg-red-500/5"
+          aria-label="Sign out"
+          title="Sign out">
           <LogOut className="w-4 h-4" />
-          <span>Sign out</span>
+          <span className="hidden sm:inline">Sign out</span>
         </Link>
       </div>
     </aside>
