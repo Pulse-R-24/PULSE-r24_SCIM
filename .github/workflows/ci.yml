@@ -10,9 +10,24 @@ jobs:
   validate:
     name: Lint, Typecheck, Test, Build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pulse_r24_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d pulse_r24_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
-      DATABASE_URL: file:./ci.db
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/pulse_r24_ci
       AUTH_SECRET: ci_auth_secret_for_release_candidate_validation
+      NEXTAUTH_URL: http://localhost:3000
       NODE_ENV: test
       LOG_LEVEL: error
       ADMIN_EMAIL: admin@pulse-r24.local

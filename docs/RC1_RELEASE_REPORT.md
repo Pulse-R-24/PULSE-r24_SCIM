@@ -84,7 +84,7 @@ Fresh-clone validation from tag `v1.0.0-rc1` at commit `3ed5219d4cc66fb2b04040bd
 - `npm ci` - passed, with `npm audit` reporting 8 known vulnerabilities: 2 low, 6 moderate
 - `Copy-Item .env.example .env` - passed
 - `npm run prisma:generate` - passed
-- `npm run db:push` - passed, created fresh SQLite database
+- `npm run db:push` - previously passed against the RC1 SQLite baseline; after Supabase configuration alignment, this must be rerun against the NEW PULSE-r24_SCIM Supabase Postgres `DATABASE_URL`
 - `npm run seed:bootstrap` - passed
 - Environment validation for `DATABASE_URL` and `AUTH_SECRET` - passed
 - `npm run lint` - passed
@@ -101,7 +101,7 @@ Runtime validation result:
 
 Standalone runtime validation result:
 
-- Command: `node apps/web/server.js` from `apps/web/.next/standalone` with `PORT=3100`, `NEXTAUTH_URL=http://127.0.0.1:3100`, `DATABASE_URL` pointed to the fresh SQLite database, and `AUTH_SECRET` set.
+- Command: `node apps/web/server.js` from `apps/web/.next/standalone` with `PORT=3100`, `NEXTAUTH_URL=http://127.0.0.1:3100`, `DATABASE_URL` pointed to the fresh validation database, and `AUTH_SECRET` set.
 - Server startup: passed, Next.js reported ready on `http://127.0.0.1:3100`.
 - `/` smoke check: passed with HTTP 200.
 - `/auth/signin` smoke check: failed.

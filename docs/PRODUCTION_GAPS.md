@@ -20,7 +20,7 @@ This document captures the production-readiness assessment for RC1. Feature deve
 ## Remaining Risks
 
 - No database migration history is maintained yet; RC1 demo setup uses `npm run db:push`, a deterministic wrapper around `prisma db push`.
-- SQLite is suitable for local/demo RC validation but not ideal for concurrent production workloads.
+- RC1 configuration is now aligned to the NEW PULSE-r24_SCIM Supabase Postgres project; database setup must be rerun against that project before another runtime validation.
 - Docker build/compose validation was deferred on the local Windows machine because Docker Desktop caused memory pressure; rerun Docker validation on a machine with sufficient RAM or in CI/CD.
 - Fresh-clone runtime validation found an Auth.js route issue: `/auth/signin` requests `/api/auth/csrf`, but only `apps/web/src/app/api/auth/route.ts` exists, so `/api/auth/csrf` returns 404 HTML instead of JSON.
 - Rate limiting is not implemented at the application layer.
@@ -54,7 +54,7 @@ This document captures the production-readiness assessment for RC1. Feature deve
 
 ## Scalability Concerns
 
-- SQLite is not recommended for multi-user production concurrency.
+- Supabase Postgres is appropriate for the next deployment validation phase, but connection pooling, migration policy, and backup/restore rehearsal still need production review.
 - Search is simple relational keyword/filter search and may need indexed query tuning as data grows.
 - Analytics are computed from live queries and may require materialized summaries for larger datasets.
 - Activity and workflow history can grow quickly and may need pagination/retention policies.

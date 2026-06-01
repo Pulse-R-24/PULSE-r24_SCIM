@@ -17,13 +17,16 @@ Start from `.env.example` and create `.env.production`.
 Minimum:
 
 ```bash
-DATABASE_URL="file:/data/prod.db"
+DATABASE_URL="postgresql://postgres.<new-project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres?sslmode=require"
 AUTH_SECRET="replace_with_a_long_random_secret"
+NEXTAUTH_URL="https://your-domain.example"
+SUPABASE_URL="https://<new-project-ref>.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="replace_with_new_project_service_role_key"
 NODE_ENV="production"
 LOG_LEVEL="info"
 ```
 
-For hosted databases, set `DATABASE_URL` to the provider connection string and update backup steps accordingly.
+Use the NEW PULSE-r24_SCIM Supabase project only. Do not point RC1 at the old PLUSE-R24 Supabase database or storage project.
 
 ## Local Production Build
 
@@ -56,7 +59,7 @@ The RC1 container startup command runs `npm run db:push` equivalent setup and `n
 
 ## Database Preparation
 
-For SQLite demo deployment:
+For Supabase database setup:
 
 ```bash
 npm run db:push
@@ -67,39 +70,17 @@ For container deployment, the RC1 compose service prepares and seeds the configu
 
 ## Backup Strategy
 
-SQLite demo deployments:
+Supabase demo deployments:
 
-1. Stop writes or pause the app.
-2. Copy the database file from the mounted volume.
-3. Store backups with timestamped filenames.
-4. Keep at least daily backups during demos.
-
-Example:
-
-```bash
-docker compose -f docker-compose.production.yml stop web
-docker run --rm -v pulse-r24_scim_pulse_r24_data:/data -v %cd%:/backup alpine cp /data/prod.db /backup/prod-backup.db
-docker compose -f docker-compose.production.yml start web
-```
-
-Hosted database deployments:
-
-- Use provider-managed automated backups.
-- Enable point-in-time restore when available.
-- Export a manual backup before every demo or migration.
+- Use Supabase-managed backups where available.
+- Export a manual SQL backup before every stakeholder demo or schema change.
+- Confirm the backup belongs to the NEW PULSE-r24_SCIM project.
 
 ## Restore Procedure
 
-SQLite demo deployments:
+Supabase demo deployments:
 
-1. Stop the app.
-2. Replace `/data/prod.db` with the selected backup file.
-3. Start the app.
-4. Run smoke checks: login, dashboard, report list, search, analytics.
-
-Hosted database deployments:
-
-1. Restore via provider backup tooling.
+1. Restore via Supabase backup tooling or SQL import.
 2. Verify schema compatibility.
 3. Run smoke checks.
 
