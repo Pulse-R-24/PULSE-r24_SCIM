@@ -2,6 +2,8 @@
 
 Clean rebuild of the PULSE-R24 intelligence report management platform.
 
+Current validated release: `v1.0.1-rc1` (`8e646b1e07a4bb295024fbf70f934ba9a7285965`).
+
 ## Layout
 
 - `apps/web` - Next.js 15 dashboard application.

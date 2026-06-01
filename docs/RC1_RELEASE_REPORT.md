@@ -2,8 +2,9 @@
 
 ## Release Identity
 
-- Release: RC1
-- Version tag: `v1.0.0-rc1`
+- Release: RC1 validated runtime release
+- Final validated tag: `v1.0.1-rc1`
+- Commit: `8e646b1e07a4bb295024fbf70f934ba9a7285965`
 - Branch: `main`
 - Repository: `https://github.com/Pulse-R-24/PULSE-r24_SCIM.git`
 - Feature status: frozen
@@ -59,94 +60,84 @@ Core principles:
 - `reviewer@pulse-r24.local` / `DemoPass123!` - FACT_CHECKER
 - `publisher@pulse-r24.local` / `DemoPass123!` - PUBLISHER
 
-## Verification Results
+## Validation Results
 
-Local RC validation completed:
+Static validation passed:
 
+- `npm run lint` - passed
+- `npm run typecheck` - passed
 - `npm test` - passed
-- `npm run lint` - passed
-- `npm run typecheck` - passed
-- `npm run build --workspace @pulse-r24/web` - passed
-- `npm run db:push` - passed
-- `npm run seed:bootstrap` - passed
-- Demo user/role seed verification - passed
-- Workflow state seed verification - passed
-- Fresh setup checklist review - passed after adding the tracked root `.env.example` and deterministic `npm run db:push` setup command
-- Git hygiene review - passed: `.env`, local databases, `node_modules`, `.next`, logs, and `*.tsbuildinfo` are ignored
-- Docker validation - deferred on this local Windows machine because Docker Desktop caused memory pressure. Docker build/compose validation should be rerun on a machine with sufficient RAM or in CI/CD. This is not treated as an RC1 product failure.
-
-Fresh-clone validation from tag `v1.0.0-rc1` at commit `3ed5219d4cc66fb2b04040bdd56783d8bb8a2c2e`:
-
-- `git clone --branch v1.0.0-rc1 --depth 1 https://github.com/Pulse-R-24/PULSE-r24_SCIM.git C:\tmp\pulse-r24-rc1-validation-final` - passed
-- `git rev-parse HEAD` - passed, returned `3ed5219d4cc66fb2b04040bdd56783d8bb8a2c2e`
-- `git status --short` - passed, clean working tree
-- `Test-Path node_modules` - passed, no local dependencies were reused
-- `npm ci` - passed, with `npm audit` reporting 8 known vulnerabilities: 2 low, 6 moderate
-- `Copy-Item .env.example .env` - passed
-- `npm run prisma:generate` - passed
-- `npm run db:push` - previously passed against the RC1 SQLite baseline; after Supabase configuration alignment, this must be rerun against the NEW PULSE-r24_SCIM Supabase Postgres `DATABASE_URL`
-- `npm run seed:bootstrap` - passed
-- Environment validation for `DATABASE_URL` and `AUTH_SECRET` - passed
-- `npm run lint` - passed
-- `npm run typecheck` - passed
-- `npm test` - passed, 11 tests
 - `npm run build --workspace @pulse-r24/web` - passed
 
-Runtime validation result:
+Runtime validation passed:
 
-- Initial command: `Start-Process -FilePath npm -ArgumentList @('run','start','--workspace','@pulse-r24/web','--','-p','3100')`
-- Error: `%1 is not a valid Win32 application.`
-- Root cause: Windows `Start-Process` cannot execute the `npm` shim directly in this validation harness.
-- Recommended fix: use `npm.cmd` for Windows shell-based runtime validation commands.
+- `/api/auth/csrf` returns JSON.
+- `/auth/signin` loads.
+- Demo users can log in.
+- Dashboard loads.
+- Reports load.
+- Evidence loads.
+- Notifications load.
+- Activity feed loads.
+- Search loads.
+- Analytics loads.
 
-Standalone runtime validation result:
+Workflow validation passed:
 
-- Command: `node apps/web/server.js` from `apps/web/.next/standalone` with `PORT=3100`, `NEXTAUTH_URL=http://127.0.0.1:3100`, `DATABASE_URL` pointed to the fresh validation database, and `AUTH_SECRET` set.
-- Server startup: passed, Next.js reported ready on `http://127.0.0.1:3100`.
-- `/` smoke check: passed with HTTP 200.
-- `/auth/signin` smoke check: failed.
-- Error output: `SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`.
-- Root cause: the sign-in page requests `/api/auth/csrf`, but the app currently defines `apps/web/src/app/api/auth/route.ts` instead of a catch-all route such as `apps/web/src/app/api/auth/[...nextauth]/route.ts`; `/api/auth/csrf` returns 404 HTML, which the sign-in page attempts to parse as JSON.
-- Recommended fix: correct the Auth.js route shape so `/api/auth/csrf` and related auth subroutes resolve, then rerun runtime and workflow validation from a fresh clone.
+- Analyst created report.
+- Draft saved.
+- URL evidence attached.
+- PNG evidence uploaded to Supabase Storage.
+- Report submitted for review.
+- Reviewer opened assigned review.
+- Reviewer requested changes.
+- Analyst resubmitted.
+- Reviewer approved.
+- Publisher published.
+- Publisher archived.
 
-Workflow validation result:
+Validated report:
 
-- Not executed after the runtime authentication failure, following the RC1 validation rule to stop on first real runtime failure.
-- Blocked workflow path: login -> dashboard -> report creation/review/publish/archive.
-- Recommended fix: resolve the auth route issue, then rerun the full Analyst -> Reviewer -> Publisher validation.
+- Title: `RC1 Runtime Validation Report 20260601162458`
+- Report ID: `2ded181a-cf7f-4361-af18-d1b9119ac886`
+- Final status: `ARCHIVED`
 
-CI/CD validation is configured in `.github/workflows/ci.yml` and fails on:
+Verified runtime records:
 
-- dependency install failure
-- Prisma generation failure
-- database setup failure
-- seed failure
-- lint failure
-- typecheck failure
-- test failure
-- production build failure
+- Workflow history records: `7`
+- Evidence records: `2`
+- Notifications returned.
+- Activity feed returned.
+- Search returned.
+- Analytics returned.
+
+## Environment Notes
+
+- Supabase PostgreSQL is used for the RC1 database.
+- Supabase Storage private bucket `evidence` is used for evidence uploads.
+- `DATABASE_URL` uses Supabase pool settings for local validation:
+  - `connection_limit=1`
+  - `pool_timeout=20`
+- `.env` and `.env.production` are ignored and must never be committed.
+- The Supabase service role key is required only server-side for signed evidence upload and validation.
 
 ## Deployment Readiness Assessment
 
 RC1 is ready for:
 
-- Code review and stakeholder architecture review
-- Setup/build validation review
-- Internal QA after the runtime auth route fix
-- Fresh-environment setup validation
-- Docker deployment testing on a machine/runner with sufficient memory
-- Controlled pilot testing with demo data after runtime and workflow validation pass
+- Stakeholder demonstration
+- Internal workflow QA
+- Architecture review
+- Local deployment testing
+- Controlled pilot testing with demo data
 
-RC1 requires additional hardening before production internet exposure:
+Remaining before production internet exposure:
 
-- Runtime auth route fix and revalidation
-- Managed Postgres migration
-- Production migrations instead of `prisma db push`
-- Rate limiting
-- Backup/restore rehearsal
-- Observability and error monitoring
-- Dependency audit remediation
-- Storage bucket policy review
+- Docker validation should be rerun on a machine with sufficient RAM or in CI/CD.
+- Rate limiting should be added at the reverse proxy and/or application layer.
+- External monitoring and error reporting should be connected.
+- Backup and restore should be tested in the hosted Supabase environment.
+- CI deployment target still needs to be connected.
 
 ## Known Limitations
 
@@ -160,7 +151,6 @@ RC1 requires additional hardening before production internet exposure:
 - No threat correlation
 - No email/SMS/push notifications
 - No predictive analytics
-- File upload requires storage configuration
 - Search is keyword/filter based
 - Analytics are simple operational aggregations
 
@@ -195,11 +185,17 @@ Future AI/OSINT work must be developed in separate feature branches and must not
 Target tag:
 
 ```text
-v1.0.0-rc1
+v1.0.1-rc1
 ```
 
-Remote verification should confirm:
+Remote verification:
 
 ```bash
-git ls-remote --tags origin v1.0.0-rc1
+git ls-remote --tags origin v1.0.1-rc1
+```
+
+Expected commit:
+
+```text
+8e646b1e07a4bb295024fbf70f934ba9a7285965
 ```
