@@ -77,3 +77,9 @@ Intentionally not implemented yet:
 - Threat correlation
 
 See [docs/QA_CHECKLIST.md](docs/QA_CHECKLIST.md) for end-to-end test coverage.
+
+## RC1 Deployment and Demo Handoff
+
+- [Deployment checklist](docs/DEPLOYMENT_CHECKLIST.md)
+- [Demo checklist](docs/DEMO_CHECKLIST.md)
+- [Screenshot checklist](docs/SCREENSHOT_CHECKLIST.md)
