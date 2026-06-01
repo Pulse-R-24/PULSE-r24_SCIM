@@ -20,6 +20,8 @@ export function getAuthOptions({ adapter, authSecret, providers = [], pages }: A
     adapter,
     providers,
     secret: authSecret,
+    basePath: '/api/auth',
+    trustHost: true,
     session: {
       strategy: 'jwt'
     },
