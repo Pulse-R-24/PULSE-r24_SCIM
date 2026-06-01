@@ -7,16 +7,28 @@ const env = {
   RUST_LOG: process.env.RUST_LOG || "debug",
 };
 
-const result = spawnSync(
-  "npx",
-  ["prisma", "db", "push", "--schema", "packages/database/prisma/schema.prisma"],
-  {
-    stdio: "inherit",
-    shell: process.platform === "win32",
-    env: Object.fromEntries(
-      Object.entries(env).filter((entry) => typeof entry[1] === "string"),
-    ),
-  },
-);
+const options = {
+  stdio: "inherit",
+  env,
+};
+
+const result =
+  process.platform === "win32"
+    ? spawnSync(
+        "powershell.exe",
+        [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command",
+          "$env:RUST_LOG='debug'; npx prisma db push --schema packages/database/prisma/schema.prisma",
+        ],
+        options,
+      )
+    : spawnSync(
+        "npx",
+        ["prisma", "db", "push", "--schema", "packages/database/prisma/schema.prisma"],
+        options,
+      );
 
 process.exit(result.status ?? 1);
