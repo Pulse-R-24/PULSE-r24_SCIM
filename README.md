@@ -16,7 +16,7 @@ Clean rebuild of the PULSE-R24 intelligence report management platform.
 npm install
 copy .env.example .env
 npm run prisma:generate
-npx prisma db push --schema packages/database/prisma/schema.prisma
+npm run db:push
 npm run seed:bootstrap
 npm run dev --workspace @pulse-r24/web
 ```
@@ -43,6 +43,7 @@ npm run build --workspace @pulse-r24/web
 npm run lint
 npm run typecheck
 npm run prisma:generate
+npm run db:push
 npm run seed:workflow
 npm run seed:roles
 npm run seed:bootstrap

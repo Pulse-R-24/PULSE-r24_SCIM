@@ -20,7 +20,7 @@ Use this checklist before demos and before adding AI/OSINT features.
 
    ```bash
    npm run prisma:generate
-   npx prisma db push --schema packages/database/prisma/schema.prisma
+   npm run db:push
    npm run seed:bootstrap
    ```
 

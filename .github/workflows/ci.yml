@@ -41,7 +41,7 @@ jobs:
         run: npm run prisma:generate
 
       - name: Prepare CI database
-        run: npx prisma db push --schema packages/database/prisma/schema.prisma
+        run: npm run db:push
 
       - name: Verify seed scripts
         run: npm run seed:bootstrap

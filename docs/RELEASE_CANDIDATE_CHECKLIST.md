@@ -13,7 +13,7 @@ Use this checklist before tagging or demoing RC1.
 ## Seed And Demo Accounts
 
 - [ ] `npm run prisma:generate` completes.
-- [ ] `npx prisma db push --schema packages/database/prisma/schema.prisma` completes.
+- [ ] `npm run db:push` completes.
 - [ ] `npm run seed:bootstrap` completes.
 - [ ] SUPER_ADMIN login works: `admin@pulse-r24.local`.
 - [ ] ANALYST login works: `analyst@pulse-r24.local`.

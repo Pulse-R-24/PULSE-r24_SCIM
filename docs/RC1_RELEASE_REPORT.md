@@ -5,7 +5,7 @@
 - Release: RC1
 - Version tag: `v1.0.0-rc1`
 - Branch: `main`
-- Repository: `https://github.com/Pulse-R-24/PLUSE-r24_SCIM.git`
+- Repository: `https://github.com/Pulse-R-24/PULSE-r24_SCIM.git`
 - Feature status: frozen
 
 ## Completed Modules
@@ -67,9 +67,13 @@ Local RC validation completed:
 - `npm run lint` - passed
 - `npm run typecheck` - passed
 - `npm run build --workspace @pulse-r24/web` - passed
+- `npm run db:push` - passed
 - `npm run seed:bootstrap` - passed
 - Demo user/role seed verification - passed
 - Workflow state seed verification - passed
+- Fresh setup checklist review - passed after adding the tracked root `.env.example` and deterministic `npm run db:push` setup command
+- Git hygiene review - passed: `.env`, local databases, `node_modules`, `.next`, logs, and `*.tsbuildinfo` are ignored
+- Docker validation - deferred on this local Windows machine because Docker Desktop caused memory pressure. Docker build/compose validation should be rerun on a machine with sufficient RAM or in CI/CD. This is not treated as an RC1 product failure.
 
 CI/CD validation is configured in `.github/workflows/ci.yml` and fails on:
 
@@ -89,7 +93,7 @@ RC1 is ready for:
 - Stakeholder demonstration
 - Internal QA
 - Fresh-environment setup validation
-- Docker deployment testing
+- Docker deployment testing on a machine/runner with sufficient memory
 - Controlled pilot testing with demo data
 
 RC1 requires additional hardening before production internet exposure:

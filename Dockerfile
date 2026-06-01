@@ -23,13 +23,17 @@ ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+RUN mkdir -p /data && chown nextjs:nodejs /data
 
 COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder /app/packages/database/prisma ./packages/database/prisma
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/scripts ./scripts
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "apps/web/server.js"]
+CMD ["sh", "-c", "node ./scripts/db/pushSchema.js && node ./scripts/seed/seedBootstrap.js && node apps/web/server.js"]

@@ -30,6 +30,7 @@ For hosted databases, set `DATABASE_URL` to the provider connection string and u
 ```bash
 npm install
 npm run prisma:generate
+npm run db:push
 npm run lint
 npm run typecheck
 npm test
@@ -51,16 +52,18 @@ docker compose -f docker-compose.production.yml up --build -d
 
 The service listens on port `3000`.
 
+The RC1 container startup command runs `npm run db:push` equivalent setup and `npm run seed:bootstrap` equivalent seeding against the configured `DATABASE_URL` before starting Next.js. This keeps demo compose deployments repeatable, but production deployments should replace this with managed migrations before broad rollout.
+
 ## Database Preparation
 
 For SQLite demo deployment:
 
 ```bash
-npx prisma db push --schema packages/database/prisma/schema.prisma
+npm run db:push
 npm run seed:bootstrap
 ```
 
-For container deployment, run migrations/seeding in an environment that can access the same `DATABASE_URL`.
+For container deployment, the RC1 compose service prepares and seeds the configured database on startup. For stricter production environments, run the same setup commands as a one-time deployment job before starting the web service.
 
 ## Backup Strategy
 

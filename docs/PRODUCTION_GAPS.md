@@ -11,7 +11,7 @@ This document captures the production-readiness assessment for RC1. Feature deve
 - Notifications are scoped to the logged-in user.
 - Search and analytics use real system data.
 - Seed scripts create workflow states, roles, permissions, and demo accounts.
-- CI validates install, Prisma generation, database setup, seed, lint, typecheck, tests, and production build.
+- CI validates install, Prisma generation, deterministic database setup, seed, lint, typecheck, tests, and production build.
 - Docker production assets exist for deployment testing.
 - Security headers are configured in Next.js.
 - File upload registration validates schema, MIME, magic bytes, and size.
@@ -19,8 +19,9 @@ This document captures the production-readiness assessment for RC1. Feature deve
 
 ## Remaining Risks
 
-- No database migration history is maintained yet; deployment uses `prisma db push`.
+- No database migration history is maintained yet; RC1 demo setup uses `npm run db:push`, a deterministic wrapper around `prisma db push`.
 - SQLite is suitable for local/demo RC validation but not ideal for concurrent production workloads.
+- Docker build/compose validation was deferred on the local Windows machine because Docker Desktop caused memory pressure; rerun Docker validation on a machine with sufficient RAM or in CI/CD.
 - Rate limiting is not implemented at the application layer.
 - File upload size limits are not enforced at every layer.
 - No automated browser/e2e test suite exists yet.
@@ -37,6 +38,7 @@ This document captures the production-readiness assessment for RC1. Feature deve
 - Move production database to managed Postgres.
 - Replace `prisma db push` with Prisma migrations for production.
 - Add migration runbook and rollback policy.
+- Add Docker build and compose smoke validation to CI/CD or a dedicated deployment runner with sufficient memory.
 - Add reverse-proxy rate limiting for auth, upload, search, and workflow mutation APIs.
 - Add application-level rate limits for authenticated write endpoints.
 - Add request logging, structured audit exports, and alerting.
