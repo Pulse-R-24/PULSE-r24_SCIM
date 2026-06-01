@@ -7,3 +7,9 @@ dist/
 build/
 *.log
 coverage/
+*.tsbuildinfo
+.env.production
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3

@@ -8,6 +8,7 @@ import {
   FilePlus2,
   Archive,
   Search,
+  BarChart3,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { label: 'Notifications',    href: '/dashboard/notifications',        icon: Bell },
   { label: 'Activity Feed',    href: '/dashboard/activity',             icon: Activity },
   { label: 'Search',           href: '/dashboard/search',               icon: Search },
+  { label: 'Analytics',        href: '/dashboard/analytics',            icon: BarChart3 },
   { label: 'Evidence Library',  href: '/dashboard/evidence',             icon: Archive },
 ] as const
 

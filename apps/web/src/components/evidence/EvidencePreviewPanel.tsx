@@ -40,6 +40,8 @@ export function EvidencePreviewPanel({ evidence }: { evidence?: EvidenceRecord }
         </div>
 
         {isImage ? (
+          // Arbitrary evidence URLs cannot be safely declared in next/image remotePatterns during investigation.
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={evidence.url || ''} alt={evidence.title} className="w-full rounded-lg border border-white/10 object-cover" />
         ) : (
           <div className="flex min-h-40 items-center justify-center rounded-lg border border-white/10 bg-slate-950/50">

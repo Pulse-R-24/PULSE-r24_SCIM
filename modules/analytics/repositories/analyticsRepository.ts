@@ -106,7 +106,7 @@ function averageReviewHours(assignments: { assigned_at: Date; completed_at: Date
   const completed = assignments.filter((item) => item.completed_at)
   if (completed.length === 0) return null
   const totalMs = completed.reduce((sum, item) => sum + (item.completed_at!.getTime() - item.assigned_at.getTime()), 0)
-  return Math.round((totalMs / completed.length / 36_000) * 10) / 10
+  return Math.round((totalMs / completed.length / 3_600_000) * 10) / 10
 }
 
 export async function getAnalytics(filters: AnalyticsFilters): Promise<AnalyticsResult> {

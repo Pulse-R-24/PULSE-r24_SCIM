@@ -20,7 +20,7 @@ export function NotificationsClient() {
     queryFn: fetchNotifications,
   })
 
-  const notifications = query.data ?? []
+  const notifications = useMemo(() => query.data ?? [], [query.data])
   const unreadCount = notifications.filter((item) => !item.read).length
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase()

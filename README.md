@@ -1,37 +1,76 @@
+# PULSE-R24 Monorepo
 
-# PULSE-R24 — Monorepo
+Clean rebuild of the PULSE-R24 intelligence report management platform.
 
-Monorepo scaffold for the PULSE-R24 rebuild. This repository provides a
-backend-first, modular foundation for the intelligence platform.
+## Layout
 
-Layout
+- `apps/web` - Next.js 15 dashboard application.
+- `apps/worker` - reserved worker app, not required for the current demo workflow.
+- `modules` - backend feature modules using service/repository boundaries.
+- `packages/*` - shared auth, database, audit, storage, logger, config, types, and UI packages.
+- `docs` - setup and QA documentation.
 
-- `apps/web` — Next.js 15 frontend (app directory, Tailwind)
-- `apps/worker` — BullMQ workers and job processors
-- `packages/*` — shared packages (ui, database, auth, logger, config, types)
-
-Quick start (local)
-
-```bash
-pnpm install
-pnpm dev
-```
-
-Development notes
-
-- Environment variables: see `.env.example` and `docs/env.md` for required keys.
-- Database: Prisma schema is in `packages/database/prisma/schema.prisma`.
-- Auth: Auth.js templates are in `packages/auth` (wire `@authjs/prisma-adapter`).
-- UI: Design primitives live in `packages/ui` and are consumed by `apps/web`.
-
-Basic seed workflows:
+## Local Setup
 
 ```bash
-pnpm prisma:generate
-pnpm seed:bootstrap
+npm install
+copy .env.example .env
+npm run prisma:generate
+npx prisma db push --schema packages/database/prisma/schema.prisma
+npm run seed:bootstrap
+npm run dev --workspace @pulse-r24/web
 ```
 
-CI
+Open `http://localhost:3000`.
 
-Basic CI workflow is included at `.github/workflows/ci.yml`.
+## Demo Accounts
 
+The bootstrap seed creates:
+
+- `admin@pulse-r24.local` / `SuperSecret123!` - SUPER_ADMIN
+- `analyst@pulse-r24.local` / `DemoPass123!` - ANALYST
+- `editor@pulse-r24.local` / `DemoPass123!` - EDITOR
+- `reviewer@pulse-r24.local` / `DemoPass123!` - FACT_CHECKER
+- `publisher@pulse-r24.local` / `DemoPass123!` - PUBLISHER
+
+Override these in `.env` before running `npm run seed:bootstrap`.
+
+## Useful Scripts
+
+```bash
+npm run dev --workspace @pulse-r24/web
+npm run build --workspace @pulse-r24/web
+npm run lint
+npm run typecheck
+npm run prisma:generate
+npm run seed:workflow
+npm run seed:roles
+npm run seed:bootstrap
+```
+
+## Current Scope
+
+Implemented for demo/testing:
+
+- Dashboard command center
+- Report editor and draft workflow
+- Evidence library and report evidence management
+- Review queue and assigned reviews
+- Workflow history
+- Notifications
+- Activity feed
+- Global search
+- Basic analytics
+
+Intentionally not implemented yet:
+
+- AI features
+- OSINT automation
+- RSS ingestion
+- BullMQ workers
+- Realtime websockets
+- Vector database
+- Semantic search
+- Threat correlation
+
+See [docs/QA_CHECKLIST.md](docs/QA_CHECKLIST.md) for end-to-end test coverage.

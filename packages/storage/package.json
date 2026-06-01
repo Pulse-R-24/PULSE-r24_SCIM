@@ -2,5 +2,8 @@
   "name": "@pulse-r24/storage",
   "version": "0.0.0",
   "private": true,
-  "main": "src/index.ts"
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ../../tsconfig.packages.json"
+  }
 }

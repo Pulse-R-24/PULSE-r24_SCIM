@@ -1,58 +1,114 @@
+require('dotenv').config()
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
-async function main() {
-  const roleNames = [
-    'SUPER_ADMIN',
-    'ADMIN',
-    'ANALYST',
-    'EDITOR',
-    'FACT_CHECKER',
-    'PUBLISHER',
-    'VIEWER'
-  ]
-
-  const permissionNames = [
+const rolePermissions = {
+  SUPER_ADMIN: [
     'can_publish',
     'can_delete',
     'can_manage_users',
     'can_upload_media',
     'can_manage_settings',
-    'can_view_analytics'
-  ]
+    'can_view_analytics',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_upload_evidence',
+    'can_delete_evidence',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_publish_reports',
+    'can_delete_reports',
+    'can_submit_reports',
+    'can_review_reports',
+    'can_approve_reports',
+    'can_archive_reports'
+  ],
+  ADMIN: [
+    'can_manage_users',
+    'can_manage_settings',
+    'can_view_analytics',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_upload_evidence',
+    'can_delete_evidence',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_delete_reports',
+    'can_submit_reports',
+    'can_review_reports',
+    'can_approve_reports',
+    'can_archive_reports'
+  ],
+  ANALYST: [
+    'can_view_analytics',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_upload_evidence',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_submit_reports'
+  ],
+  EDITOR: [
+    'can_publish',
+    'can_upload_media',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_upload_evidence',
+    'can_delete_evidence',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_submit_reports',
+    'can_review_reports',
+    'can_approve_reports'
+  ],
+  FACT_CHECKER: [
+    'can_view_analytics',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_review_reports',
+    'can_approve_reports'
+  ],
+  PUBLISHER: [
+    'can_publish',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_publish_reports',
+    'can_archive_reports'
+  ],
+  VIEWER: ['can_view_reports', 'can_view_evidence']
+}
 
-  const permissions = []
+async function main() {
+  const permissionNames = Array.from(new Set(Object.values(rolePermissions).flat()))
+  const permissions = new Map()
+
   for (const name of permissionNames) {
-    const p = await prisma.permission.upsert({
+    const permission = await prisma.permission.upsert({
       where: { name },
       update: {},
       create: { name }
     })
-    permissions.push(p)
+    permissions.set(name, permission)
   }
 
-  const roles = []
-  for (const name of roleNames) {
-    const r = await prisma.role.upsert({
-      where: { name },
+  for (const [roleName, permissionList] of Object.entries(rolePermissions)) {
+    const role = await prisma.role.upsert({
+      where: { name: roleName },
       update: {},
-      create: { name }
+      create: { name: roleName }
     })
-    roles.push(r)
-  }
 
-  const superRole = roles.find((r) => r.name === 'SUPER_ADMIN')
-  if (superRole) {
-    for (const p of permissions) {
+    for (const permissionName of permissionList) {
+      const permission = permissions.get(permissionName)
       await prisma.rolePermission.upsert({
-        where: { roleId_permissionId: { roleId: superRole.id, permissionId: p.id } },
+        where: { roleId_permissionId: { roleId: role.id, permissionId: permission.id } },
         update: {},
-        create: { roleId: superRole.id, permissionId: p.id }
+        create: { roleId: role.id, permissionId: permission.id }
       })
     }
   }
 
-  console.log('Seeded roles and permissions')
+  console.log('Seeded roles and permissions.')
 }
 
 main()

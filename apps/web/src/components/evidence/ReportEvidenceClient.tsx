@@ -82,7 +82,7 @@ export function ReportEvidenceClient({ reportId }: { reportId: string }) {
     queryFn: fetchEvidenceLibrary,
   })
 
-  const evidence = reportEvidenceQuery.data ?? []
+  const evidence = useMemo(() => reportEvidenceQuery.data ?? [], [reportEvidenceQuery.data])
   useEffect(() => {
     if (!selectedId && evidence[0]) setSelectedId(evidence[0].id)
     if (selectedId && !evidence.some((item) => item.id === selectedId)) setSelectedId(evidence[0]?.id)

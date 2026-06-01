@@ -1,36 +1,59 @@
-name: CI
+name: RC1 Validation
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build:
+  validate:
+    name: Lint, Typecheck, Test, Build
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: file:./ci.db
+      AUTH_SECRET: ci_auth_secret_for_release_candidate_validation
+      NODE_ENV: test
+      LOG_LEVEL: error
+      ADMIN_EMAIL: admin@pulse-r24.local
+      ADMIN_PASSWORD: SuperSecret123!
+      ADMIN_NAME: Super Admin
+      DEMO_PASSWORD: DemoPass123!
+      DEMO_ANALYST_EMAIL: analyst@pulse-r24.local
+      DEMO_EDITOR_EMAIL: editor@pulse-r24.local
+      DEMO_REVIEWER_EMAIL: reviewer@pulse-r24.local
+      DEMO_PUBLISHER_EMAIL: publisher@pulse-r24.local
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: npm
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
+      - name: Generate Prisma client
+        run: npm run prisma:generate
 
-      - name: Build
-        run: pnpm build
+      - name: Prepare CI database
+        run: npx prisma db push --schema packages/database/prisma/schema.prisma
+
+      - name: Verify seed scripts
+        run: npm run seed:bootstrap
 
       - name: Lint
-        run: pnpm lint || true
+        run: npm run lint
 
       - name: Typecheck
-        run: pnpm typecheck || true
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build --workspace @pulse-r24/web

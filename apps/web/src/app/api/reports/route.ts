@@ -35,6 +35,13 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
+  const session = await getServerSessionFromRequest(req)
+  if (!session) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  }
+
+  requirePermission(session, 'can_view_reports')
+
   const url = new URL(req.url)
   const id = url.searchParams.get('id')
   if (id) {
@@ -50,10 +57,6 @@ export async function GET(req: NextRequest) {
 
   let assignedReviewerId: string | undefined
   if (assignedToMe) {
-    const session = await getServerSessionFromRequest(req)
-    if (!session) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
-    }
     requirePermission(session, 'can_review_reports')
     assignedReviewerId = session.user.id
   }

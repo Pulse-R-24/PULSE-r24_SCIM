@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": false,
+    "baseUrl": ".",
+    "paths": {
+      "@modules/*": ["modules/*"],
+      "@pulse-r24/*": ["packages/*/src"],
+      "@/*": ["apps/web/src/*"]
+    }
+  },
+  "include": ["packages/**/*.ts"]
+}

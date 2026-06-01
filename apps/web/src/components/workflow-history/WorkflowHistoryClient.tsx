@@ -79,7 +79,7 @@ export function WorkflowHistoryClient() {
     queryFn: () => fetchWorkflowHistory({ search: search.trim(), status, action }),
   })
 
-  const records = historyQuery.data ?? []
+  const records = useMemo(() => historyQuery.data ?? [], [historyQuery.data])
 
   useEffect(() => {
     if (records.length === 0) {

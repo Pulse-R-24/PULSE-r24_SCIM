@@ -19,6 +19,17 @@ export async function completeReviewAssignment(assignmentId: string) {
   return prisma.reviewAssignment.update({ where: { id: assignmentId }, data: { completed_at: new Date() } })
 }
 
+export async function completeActiveReviewAssignments(reportId: string, reviewerId: string) {
+  return prisma.reviewAssignment.updateMany({
+    where: {
+      reportId,
+      reviewerId,
+      completed_at: null
+    },
+    data: { completed_at: new Date() }
+  })
+}
+
 export async function createWorkflowHistory(reportId: string, action: string, actorId?: string, meta?: Record<string, unknown>) {
   return prisma.workflowHistory.create({
     data: {

@@ -37,7 +37,15 @@ const rolePermissions: Record<RoleName, PermissionName[]> = {
     'can_approve_reports',
     'can_archive_reports'
   ],
-  [RoleName.ANALYST]: ['can_view_analytics', 'can_view_reports', 'can_view_evidence'],
+  [RoleName.ANALYST]: [
+    'can_view_analytics',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_upload_evidence',
+    'can_create_reports',
+    'can_edit_reports',
+    'can_submit_reports'
+  ],
   [RoleName.EDITOR]: [
     'can_publish',
     'can_upload_media',
@@ -48,15 +56,24 @@ const rolePermissions: Record<RoleName, PermissionName[]> = {
     'can_create_reports',
     'can_edit_reports',
     'can_submit_reports',
-    'can_review_reports'
+    'can_review_reports',
+    'can_approve_reports'
   ],
-  [RoleName.FACT_CHECKER]: ['can_view_analytics', 'can_view_reports', 'can_view_evidence', 'can_review_reports'],
+  [RoleName.FACT_CHECKER]: [
+    'can_view_analytics',
+    'can_view_reports',
+    'can_view_evidence',
+    'can_review_reports',
+    'can_approve_reports'
+  ],
   [RoleName.PUBLISHER]: [
     'can_publish',
+    'can_view_reports',
+    'can_view_evidence',
     'can_publish_reports',
     'can_archive_reports'
   ],
-  [RoleName.VIEWER]: []
+  [RoleName.VIEWER]: ['can_view_reports', 'can_view_evidence']
 }
 
 export function hasRole(session: AuthSession | null, role: RoleName) {

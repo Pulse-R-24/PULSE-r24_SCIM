@@ -65,7 +65,7 @@ export function EvidenceLibraryClient() {
     queryFn: () => fetchEvidence(search),
   })
 
-  const evidence = query.data ?? []
+  const evidence = useMemo(() => query.data ?? [], [query.data])
   const reportOptions = useMemo(() => {
     const map = new Map<string, string>()
     evidence.forEach((item) => {

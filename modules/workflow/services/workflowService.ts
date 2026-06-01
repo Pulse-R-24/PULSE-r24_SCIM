@@ -58,6 +58,7 @@ export async function approveReport(input: ReviewActionInput, actorId: string) {
   const report = await reportRepo.findReportById(parsed.reportId)
 
   await repo.setReportWorkflowState(parsed.reportId, 'APPROVED')
+  await repo.completeActiveReviewAssignments(parsed.reportId, actorId)
   await repo.createWorkflowHistory(parsed.reportId, 'APPROVE', actorId, {
     previousStatus: report?.status?.key,
     nextStatus: 'APPROVED',
@@ -104,6 +105,7 @@ export async function rejectReport(input: ReviewActionInput, actorId: string) {
   const report = await reportRepo.findReportById(parsed.reportId)
 
   await repo.setReportWorkflowState(parsed.reportId, 'DRAFT')
+  await repo.completeActiveReviewAssignments(parsed.reportId, actorId)
   await repo.createWorkflowHistory(parsed.reportId, 'REJECT', actorId, {
     previousStatus: report?.status?.key,
     nextStatus: 'DRAFT',
@@ -151,6 +153,7 @@ export async function requestChanges(input: ReviewActionInput, actorId: string) 
   const report = await reportRepo.findReportById(parsed.reportId)
 
   await repo.setReportWorkflowState(parsed.reportId, 'CHANGES_REQUESTED')
+  await repo.completeActiveReviewAssignments(parsed.reportId, actorId)
   await repo.createWorkflowHistory(parsed.reportId, 'REQUEST_CHANGES', actorId, {
     previousStatus: report?.status?.key,
     nextStatus: 'CHANGES_REQUESTED',
