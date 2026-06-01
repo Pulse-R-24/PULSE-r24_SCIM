@@ -22,6 +22,7 @@ This document captures the production-readiness assessment for RC1. Feature deve
 - No database migration history is maintained yet; RC1 demo setup uses `npm run db:push`, a deterministic wrapper around `prisma db push`.
 - SQLite is suitable for local/demo RC validation but not ideal for concurrent production workloads.
 - Docker build/compose validation was deferred on the local Windows machine because Docker Desktop caused memory pressure; rerun Docker validation on a machine with sufficient RAM or in CI/CD.
+- Fresh-clone runtime validation found an Auth.js route issue: `/auth/signin` requests `/api/auth/csrf`, but only `apps/web/src/app/api/auth/route.ts` exists, so `/api/auth/csrf` returns 404 HTML instead of JSON.
 - Rate limiting is not implemented at the application layer.
 - File upload size limits are not enforced at every layer.
 - No automated browser/e2e test suite exists yet.
@@ -39,6 +40,7 @@ This document captures the production-readiness assessment for RC1. Feature deve
 - Replace `prisma db push` with Prisma migrations for production.
 - Add migration runbook and rollback policy.
 - Add Docker build and compose smoke validation to CI/CD or a dedicated deployment runner with sufficient memory.
+- Fix the Auth.js API route shape, then rerun runtime smoke checks and the full Analyst -> Reviewer -> Publisher workflow validation from a fresh clone.
 - Add reverse-proxy rate limiting for auth, upload, search, and workflow mutation APIs.
 - Add application-level rate limits for authenticated write endpoints.
 - Add request logging, structured audit exports, and alerting.
@@ -77,11 +79,11 @@ This document captures the production-readiness assessment for RC1. Feature deve
 
 RC1 is suitable for:
 
-- Stakeholder demonstration
+- Stakeholder architecture/setup review
 - Local deployment testing
-- Internal workflow QA
+- Internal workflow QA after the runtime auth route fix
 - Architecture review
-- Controlled pilot testing with demo data
+- Controlled pilot testing with demo data after runtime and workflow validation pass
 
 RC1 is not yet suitable for:
 

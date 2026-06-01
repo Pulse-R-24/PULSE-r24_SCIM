@@ -75,6 +75,46 @@ Local RC validation completed:
 - Git hygiene review - passed: `.env`, local databases, `node_modules`, `.next`, logs, and `*.tsbuildinfo` are ignored
 - Docker validation - deferred on this local Windows machine because Docker Desktop caused memory pressure. Docker build/compose validation should be rerun on a machine with sufficient RAM or in CI/CD. This is not treated as an RC1 product failure.
 
+Fresh-clone validation from tag `v1.0.0-rc1` at commit `3ed5219d4cc66fb2b04040bdd56783d8bb8a2c2e`:
+
+- `git clone --branch v1.0.0-rc1 --depth 1 https://github.com/Pulse-R-24/PULSE-r24_SCIM.git C:\tmp\pulse-r24-rc1-validation-final` - passed
+- `git rev-parse HEAD` - passed, returned `3ed5219d4cc66fb2b04040bdd56783d8bb8a2c2e`
+- `git status --short` - passed, clean working tree
+- `Test-Path node_modules` - passed, no local dependencies were reused
+- `npm ci` - passed, with `npm audit` reporting 8 known vulnerabilities: 2 low, 6 moderate
+- `Copy-Item .env.example .env` - passed
+- `npm run prisma:generate` - passed
+- `npm run db:push` - passed, created fresh SQLite database
+- `npm run seed:bootstrap` - passed
+- Environment validation for `DATABASE_URL` and `AUTH_SECRET` - passed
+- `npm run lint` - passed
+- `npm run typecheck` - passed
+- `npm test` - passed, 11 tests
+- `npm run build --workspace @pulse-r24/web` - passed
+
+Runtime validation result:
+
+- Initial command: `Start-Process -FilePath npm -ArgumentList @('run','start','--workspace','@pulse-r24/web','--','-p','3100')`
+- Error: `%1 is not a valid Win32 application.`
+- Root cause: Windows `Start-Process` cannot execute the `npm` shim directly in this validation harness.
+- Recommended fix: use `npm.cmd` for Windows shell-based runtime validation commands.
+
+Standalone runtime validation result:
+
+- Command: `node apps/web/server.js` from `apps/web/.next/standalone` with `PORT=3100`, `NEXTAUTH_URL=http://127.0.0.1:3100`, `DATABASE_URL` pointed to the fresh SQLite database, and `AUTH_SECRET` set.
+- Server startup: passed, Next.js reported ready on `http://127.0.0.1:3100`.
+- `/` smoke check: passed with HTTP 200.
+- `/auth/signin` smoke check: failed.
+- Error output: `SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON`.
+- Root cause: the sign-in page requests `/api/auth/csrf`, but the app currently defines `apps/web/src/app/api/auth/route.ts` instead of a catch-all route such as `apps/web/src/app/api/auth/[...nextauth]/route.ts`; `/api/auth/csrf` returns 404 HTML, which the sign-in page attempts to parse as JSON.
+- Recommended fix: correct the Auth.js route shape so `/api/auth/csrf` and related auth subroutes resolve, then rerun runtime and workflow validation from a fresh clone.
+
+Workflow validation result:
+
+- Not executed after the runtime authentication failure, following the RC1 validation rule to stop on first real runtime failure.
+- Blocked workflow path: login -> dashboard -> report creation/review/publish/archive.
+- Recommended fix: resolve the auth route issue, then rerun the full Analyst -> Reviewer -> Publisher validation.
+
 CI/CD validation is configured in `.github/workflows/ci.yml` and fails on:
 
 - dependency install failure
@@ -90,14 +130,16 @@ CI/CD validation is configured in `.github/workflows/ci.yml` and fails on:
 
 RC1 is ready for:
 
-- Stakeholder demonstration
-- Internal QA
+- Code review and stakeholder architecture review
+- Setup/build validation review
+- Internal QA after the runtime auth route fix
 - Fresh-environment setup validation
 - Docker deployment testing on a machine/runner with sufficient memory
-- Controlled pilot testing with demo data
+- Controlled pilot testing with demo data after runtime and workflow validation pass
 
 RC1 requires additional hardening before production internet exposure:
 
+- Runtime auth route fix and revalidation
 - Managed Postgres migration
 - Production migrations instead of `prisma db push`
 - Rate limiting
