@@ -1,4 +1,5 @@
-import { Send } from 'lucide-react'
+import Link from 'next/link'
+import { ExternalLink, Send } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { ReviewStatusBadge } from '@/components/assigned/ReviewStatusBadge'
@@ -9,6 +10,7 @@ interface ReportWorkflowStatusPanelProps {
   canSubmit: boolean
   isSubmitting: boolean
   onSubmit: () => void
+  publicSlug?: string | undefined
 }
 
 export function ReportWorkflowStatusPanel({
@@ -17,7 +19,10 @@ export function ReportWorkflowStatusPanel({
   canSubmit,
   isSubmitting,
   onSubmit,
+  publicSlug,
 }: ReportWorkflowStatusPanelProps) {
+  const canViewPublicReport = status === 'PUBLISHED' && publicSlug
+
   return (
     <Card>
       <CardHeader>
@@ -45,6 +50,16 @@ export function ReportWorkflowStatusPanel({
         >
           Submit for Review
         </Button>
+
+        {canViewPublicReport && (
+          <Link
+            href={`/news/${publicSlug}`}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-100 transition hover:border-rose-400/60 hover:bg-rose-500/20"
+          >
+            <ExternalLink className="h-4 w-4" />
+            View Public Report
+          </Link>
+        )}
       </CardContent>
     </Card>
   )

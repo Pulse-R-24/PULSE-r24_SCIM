@@ -49,6 +49,7 @@ function classifyEvidence(item: { url?: string | null; mediaId?: string | null; 
 
 function reportPreview(report: {
   id: string
+  slug: string
   title: string
   updated_at: Date
   status: { key: string }
@@ -57,13 +58,14 @@ function reportPreview(report: {
 }): DashboardReportPreview {
   return {
     id: report.id,
+    slug: report.slug,
     title: report.title,
     status: report.status.key,
     author: userLabel(report.author),
     evidenceCount: report._count?.evidence,
     assignmentCount: report._count?.assignments,
     updated_at: report.updated_at.toISOString(),
-    href: `/dashboard/reports/${report.id}/edit`
+    href: report.status.key === 'PUBLISHED' ? `/news/${report.slug}` : `/dashboard/reports/${report.id}/edit`
   }
 }
 

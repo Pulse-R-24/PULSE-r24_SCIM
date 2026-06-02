@@ -19,6 +19,7 @@ export interface DashboardStatusCount {
 
 export interface DashboardReportPreview {
   id: string
+  slug?: string
   title: string
   status: string
   author?: string | null

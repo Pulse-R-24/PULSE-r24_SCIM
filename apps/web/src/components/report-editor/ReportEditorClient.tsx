@@ -26,6 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle, Skeleton } from '@/components
 
 const reportSchema = z.object({
   id: z.string(),
+  slug: z.string(),
   title: z.string(),
   body_markdown: z.string(),
   updated_at: z.string(),
@@ -296,6 +297,7 @@ export function ReportEditorClient({ reportId: initialReportId }: { reportId?: s
               canSubmit={canSubmit}
               isSubmitting={submitMutation.isPending}
               onSubmit={() => submitMutation.mutate()}
+              publicSlug={report?.status?.key === 'PUBLISHED' ? report.slug : undefined}
             />
 
             <Card>

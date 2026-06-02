@@ -26,6 +26,7 @@ export interface ReportRevision {
 
 export interface ReportEditorRecord {
   id: string
+  slug: string
   title: string
   body_markdown: string
   updated_at: string

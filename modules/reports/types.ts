@@ -15,3 +15,37 @@ export interface ReportUpdateInput {
   tagNames?: string[]
   status?: WorkflowStatus
 }
+
+export interface PublicReportCategory {
+  name: string
+  slug: string
+}
+
+export interface PublicReportSummary {
+  title: string
+  slug: string
+  excerpt: string
+  published_at: string
+  category?: PublicReportCategory | null
+  tags: string[]
+  byline: string
+  readTime: string
+}
+
+export interface PublicReportDetail extends PublicReportSummary {
+  body_markdown: string
+}
+
+export interface PublicReportListInput {
+  q?: string
+  categorySlug?: string
+  tag?: string
+  skip?: number
+  take?: number
+}
+
+export interface PublicReportListResult {
+  reports: PublicReportSummary[]
+  total: number
+  categories: PublicReportCategory[]
+}

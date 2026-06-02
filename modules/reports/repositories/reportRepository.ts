@@ -199,3 +199,85 @@ export async function listTags() {
   })
 }
 
+const publicReportInclude = {
+  status: true,
+  author: { select: { name: true } },
+  categories: { include: { category: true } },
+  tags: { include: { tag: true } },
+  history: {
+    where: { action: 'PUBLISH' },
+    orderBy: { created_at: 'desc' as const },
+    take: 1,
+    select: { created_at: true }
+  }
+}
+
+export async function listPublishedReportsForPublic(opts?: {
+  q?: string
+  categoryId?: string
+  tagName?: string
+  skip?: number
+  take?: number
+}) {
+  const where: any = {
+    deleted_at: null,
+    status: { key: 'PUBLISHED' }
+  }
+
+  if (opts?.q) {
+    where.OR = [
+      { title: { contains: opts.q } },
+      { body_markdown: { contains: opts.q } }
+    ]
+  }
+
+  if (opts?.categoryId) {
+    where.categories = { some: { categoryId: opts.categoryId } }
+  }
+
+  if (opts?.tagName) {
+    where.tags = { some: { tag: { name: opts.tagName } } }
+  }
+
+  const [reports, total] = await Promise.all([
+    prisma.report.findMany({
+      where,
+      skip: opts?.skip,
+      take: opts?.take,
+      orderBy: { updated_at: 'desc' },
+      include: publicReportInclude
+    }),
+    prisma.report.count({ where })
+  ])
+
+  return { reports, total }
+}
+
+export async function findPublishedReportBySlug(slug: string) {
+  return prisma.report.findFirst({
+    where: {
+      slug,
+      deleted_at: null,
+      status: { key: 'PUBLISHED' }
+    },
+    include: publicReportInclude
+  })
+}
+
+export async function listPublicReportCategories() {
+  return prisma.category.findMany({
+    where: {
+      deleted_at: null,
+      reports: {
+        some: {
+          report: {
+            deleted_at: null,
+            status: { key: 'PUBLISHED' }
+          }
+        }
+      }
+    },
+    orderBy: { name: 'asc' }
+  })
+}
+

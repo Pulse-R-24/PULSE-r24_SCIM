@@ -102,6 +102,10 @@ code, pre, kbd {
   0%, 100% { box-shadow: 0 0 8px rgba(159,18,57,0.24); }
   50%       { box-shadow: 0 0 24px rgba(159,18,57,0.55); }
 }
+@keyframes public-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
 .animate-fade-in   { animation: fadeIn 0.3s ease forwards; }
 .animate-shimmer   {
@@ -110,6 +114,7 @@ code, pre, kbd {
   animation: shimmer 1.8s infinite;
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-public-marquee { animation: public-marquee 36s linear infinite; }
 
 /* ── Sidebar nav links ───────────────────── */
 .nav-link {
