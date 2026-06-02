@@ -1,15 +1,35 @@
-# RC1 Release Report
+# PULSE-r24_SCIM v1.1.0-rc1 Release Report
 
 ## Release Identity
 
-- Release: RC1 validated runtime release
-- Final validated tag: `v1.0.1-rc1`
-- Commit: `8e646b1e07a4bb295024fbf70f934ba9a7285965`
+- Release: Public-first RC release candidate
+- Release tag: `v1.1.0-rc1`
+- Previous validated runtime tag: `v1.0.1-rc1`
 - Branch: `main`
 - Repository: `https://github.com/Pulse-R-24/PULSE-r24_SCIM.git`
-- Feature status: frozen
+- Feature status: frozen for release validation
+
+## Release Summary
+
+`v1.1.0-rc1` adds the public-first PULSE-R24 news and intelligence website layer on top of the previously validated private workflow platform.
+
+The main site now begins at `/` as a public PULSE-R24 reader experience. The staff dashboard remains protected under `/dashboard` and is used by analysts, editors, reviewers, publishers, and admins.
 
 ## Completed Modules
+
+Public website:
+
+- Public PULSE-R24 homepage
+- Public news listing
+- Public article detail page
+- Public category listing
+- Public latest page
+- Public-only search page
+- Public navbar, footer, hero, ticker, issue header, article cards, article detail layout, and threat-map inspired visual section
+- Public-safe report DTO layer
+- Public visibility guardrail tests
+
+Private platform:
 
 - Dashboard command center
 - Report editor and draft workflow
@@ -20,7 +40,7 @@
 - Workflow history
 - Notifications
 - Activity feed
-- Global search and filters
+- Global private search and filters
 - Basic analytics
 - RBAC helpers and permissions
 - Audit/activity logging integration
@@ -30,27 +50,69 @@
 - RC contract tests
 - QA, architecture, deployment, security, testing, and user documentation
 
+## Public Routes Implemented
+
+- `/`
+- `/news`
+- `/news/[slug]`
+- `/category/[slug]`
+- `/latest`
+- `/public-search`
+
+## Private Routes Retained
+
+- `/auth/signin`
+- `/dashboard`
+- `/dashboard/reports/new`
+- `/dashboard/reports/[id]/edit`
+- `/dashboard/evidence`
+- `/dashboard/review-queue`
+- `/dashboard/assigned-reviews`
+- `/dashboard/workflow-history`
+- `/dashboard/notifications`
+- `/dashboard/activity`
+- `/dashboard/search`
+- `/dashboard/analytics`
+
 ## Architecture Summary
 
-The application follows a modular architecture:
+The application continues to follow the established architecture:
 
 ```text
 Next.js UI
--> API route
+-> API route or server route component
 -> module service
 -> module repository
 -> Prisma/database
 ```
 
-Core principles:
+Core principles preserved:
 
+- Public pages use public-safe report service functions.
 - No direct Prisma access from UI.
-- No direct Prisma access from API routes.
+- No direct Prisma access from API route handlers.
 - Business logic lives in services.
 - Database access lives in repositories.
 - Zod is used for validation.
-- RBAC protects privileged actions.
+- RBAC protects private workflow actions.
 - Audit logs are separate from user-facing activity feed.
+- Public pages do not expose private evidence, workflow notes, review assignments, audit logs, activity metadata, notifications, or internal user IDs.
+
+## Public Visibility Rules
+
+Public pages show only reports where workflow status is `PUBLISHED` and `deleted_at` is null.
+
+Public pages hide:
+
+- `DRAFT`
+- `UNDER_REVIEW`
+- `CHANGES_REQUESTED`
+- `APPROVED`
+- `REJECTED`
+- `ARCHIVED`
+- soft-deleted reports
+
+Private evidence and Supabase Storage paths do not appear on public pages.
 
 ## Demo Roles And Accounts
 
@@ -62,48 +124,45 @@ Core principles:
 
 ## Validation Results
 
-Static validation passed:
+Static validation passed for the public-first implementation:
 
 - `npm run lint` - passed
 - `npm run typecheck` - passed
 - `npm test` - passed
 - `npm run build --workspace @pulse-r24/web` - passed
 
-Runtime validation passed:
+Public runtime smoke validation passed:
 
-- `/api/auth/csrf` returns JSON.
-- `/auth/signin` loads.
-- Demo users can log in.
-- Dashboard loads.
-- Reports load.
-- Evidence loads.
-- Notifications load.
-- Activity feed loads.
-- Search loads.
-- Analytics loads.
+- `/` loads without login.
+- `/news` loads without login.
+- `/latest` loads without login.
+- `/public-search` loads without login.
+- `/auth/signin` loads separately.
+- Unauthenticated `/dashboard` redirects and remains protected.
 
-Workflow validation passed:
+Workflow visibility smoke validation passed:
 
-- Analyst created report.
-- Draft saved.
-- URL evidence attached.
-- PNG evidence uploaded to Supabase Storage.
-- Report submitted for review.
-- Reviewer opened assigned review.
-- Reviewer requested changes.
-- Analyst resubmitted.
-- Reviewer approved.
-- Publisher published.
-- Publisher archived.
+- Analyst created a smoke report.
+- `DRAFT` report returned `404` publicly.
+- `UNDER_REVIEW` report returned `404` publicly.
+- `APPROVED` report returned `404` publicly.
+- Publisher published the report.
+- `PUBLISHED` report returned `200` publicly.
+- Public search found the published report.
+- Publisher archived the report.
+- `ARCHIVED` report returned `404` publicly.
 
-Validated report:
+Validated public smoke report:
+
+- Report ID: `290a8803-0d39-48c7-b0c4-55f0bf8fbd67`
+- Slug: `public-portal-smoke-20260602095914-1780374555817`
+- Final status: `ARCHIVED`
+
+Previous RC1 runtime validation reference:
 
 - Title: `RC1 Runtime Validation Report 20260601162458`
 - Report ID: `2ded181a-cf7f-4361-af18-d1b9119ac886`
 - Final status: `ARCHIVED`
-
-Verified runtime records:
-
 - Workflow history records: `7`
 - Evidence records: `2`
 - Notifications returned.
@@ -113,7 +172,7 @@ Verified runtime records:
 
 ## Environment Notes
 
-- Supabase PostgreSQL is used for the RC1 database.
+- Supabase PostgreSQL is used for the release database.
 - Supabase Storage private bucket `evidence` is used for evidence uploads.
 - `DATABASE_URL` uses Supabase pool settings for local validation:
   - `connection_limit=1`
@@ -123,12 +182,14 @@ Verified runtime records:
 
 ## Deployment Readiness Assessment
 
-RC1 is ready for:
+`v1.1.0-rc1` is ready for:
 
 - Stakeholder demonstration
+- Manual public website visual review
+- Screenshot capture
+- Deployment testing
 - Internal workflow QA
 - Architecture review
-- Local deployment testing
 - Controlled pilot testing with demo data
 
 Remaining before production internet exposure:
@@ -138,6 +199,7 @@ Remaining before production internet exposure:
 - External monitoring and error reporting should be connected.
 - Backup and restore should be tested in the hosted Supabase environment.
 - CI deployment target still needs to be connected.
+- Manual visual review and screenshot capture should be completed for both public and private surfaces.
 
 ## Known Limitations
 
@@ -151,6 +213,8 @@ Remaining before production internet exposure:
 - No threat correlation
 - No email/SMS/push notifications
 - No predictive analytics
+- Public ticker uses published reports only, not live external feeds
+- Public threat-map inspired section is visual/report-based only, not automated threat correlation
 - Search is keyword/filter based
 - Analytics are simple operational aggregations
 
@@ -169,7 +233,7 @@ Remaining before production internet exposure:
 
 ```text
 main
--> stable RC1 baseline
+-> stable release-candidate baseline
 
 develop
 -> future improvements
@@ -178,24 +242,18 @@ feature/*
 -> isolated feature work
 ```
 
-Future AI/OSINT work must be developed in separate feature branches and must not modify the RC1 baseline until fully tested.
+Future AI/OSINT work must be developed in separate feature branches and must not modify the release baseline until fully tested.
 
 ## Release Tag Verification
 
 Target tag:
 
 ```text
-v1.0.1-rc1
+v1.1.0-rc1
 ```
 
 Remote verification:
 
 ```bash
-git ls-remote --tags origin v1.0.1-rc1
-```
-
-Expected commit:
-
-```text
-8e646b1e07a4bb295024fbf70f934ba9a7285965
+git ls-remote --tags origin v1.1.0-rc1
 ```

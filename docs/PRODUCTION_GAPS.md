@@ -1,10 +1,16 @@
-# RC1 Production Gaps
+# v1.1.0-rc1 Production Gaps
 
-This document captures the production-readiness assessment for RC1. Feature development is frozen; these items are deployment, reliability, security, and operational hardening concerns.
+This document captures the production-readiness assessment for the public-first `v1.1.0-rc1` release candidate. Feature development is frozen; these items are deployment, reliability, security, and operational hardening concerns.
 
 ## Current Strengths
 
-- Core intelligence report workflow is implemented end-to-end.
+- Public-first PULSE-R24 website layer is implemented.
+- Public routes exist for `/`, `/news`, `/news/[slug]`, `/category/[slug]`, `/latest`, and `/public-search`.
+- Public pages show only `PUBLISHED` non-deleted reports.
+- `DRAFT`, `UNDER_REVIEW`, `CHANGES_REQUESTED`, `APPROVED`, `REJECTED`, and `ARCHIVED` reports are hidden publicly.
+- Private evidence, workflow comments, review assignments, audit logs, notifications, activity metadata, and internal user IDs are not exposed publicly.
+- Private dashboard remains protected behind Auth.js and RBAC.
+- Core intelligence report workflow is implemented end to end.
 - Route -> service -> repository architecture is in place.
 - Dashboard, reports, evidence, review, workflow history, notifications, activity, search, and analytics are implemented.
 - RBAC checks protect major workflow actions and sensitive APIs.
@@ -19,9 +25,10 @@ This document captures the production-readiness assessment for RC1. Feature deve
 
 ## Remaining Risks
 
-- No database migration history is maintained yet; RC1 demo setup uses `npm run db:push`, a deterministic wrapper around `prisma db push`.
+- No database migration history is maintained yet; demo setup uses `npm run db:push`, a deterministic wrapper around `prisma db push`.
 - Docker build/compose validation was deferred on the local Windows machine because Docker Desktop caused memory pressure; rerun Docker validation on a machine with sufficient RAM or in CI/CD.
 - Rate limiting is not implemented at the application layer.
+- Public routes should be tested behind the final production CDN/proxy cache behavior before stakeholder publication.
 - File upload size limits are not enforced at every layer.
 - No automated browser/e2e test suite exists yet.
 - Contract tests validate code paths statically but do not replace database-backed integration tests.
@@ -32,29 +39,32 @@ This document captures the production-readiness assessment for RC1. Feature deve
 - Email/SMS/push notifications are not implemented.
 - Backup and restore procedures are documented but not fully rehearsed in this environment.
 - CI deployment target still needs to be connected.
+- Manual visual review and screenshot capture are still required after this tag.
 
 ## Recommended Production Improvements
 
-- Move production database to managed Postgres.
+- Move production database to managed Postgres with a tested migration policy.
 - Replace `prisma db push` with Prisma migrations for production.
 - Add migration runbook and rollback policy.
 - Add Docker build and compose smoke validation to CI/CD or a dedicated deployment runner with sufficient memory.
-- Add reverse-proxy rate limiting for auth, upload, search, and workflow mutation APIs.
+- Add reverse-proxy rate limiting for public search, auth, upload, and workflow mutation APIs.
 - Add application-level rate limits for authenticated write endpoints.
 - Add request logging, structured audit exports, and alerting.
 - Add health/readiness endpoints for container orchestration.
 - Add database-backed service integration tests.
-- Add browser smoke tests for the complete demo workflow.
-- Add storage-specific upload limits and antivirus/malware scanning before public file upload.
+- Add browser smoke tests for the complete public and private demo workflow.
+- Add storage-specific upload limits and antivirus/malware scanning before broader file upload use.
 - Add Sentry or equivalent error monitoring.
 - Add dependency scanning in CI.
 - Rehearse backup and restore in the hosted Supabase environment before stakeholder demos.
 - Connect the CI deployment target and environment secrets.
+- Add cache and revalidation strategy for public pages once deployment platform is selected.
 
 ## Scalability Concerns
 
 - Supabase Postgres is appropriate for the next deployment validation phase, but connection pooling, migration policy, and backup/restore rehearsal still need production review.
-- Search is simple relational keyword/filter search and may need indexed query tuning as data grows.
+- Public search is simple relational keyword/filter search and may need indexed query tuning as published report volume grows.
+- Public pages are dynamic to avoid build-time database coupling; deployment should monitor latency and database connection usage.
 - Analytics are computed from live queries and may require materialized summaries for larger datasets.
 - Activity and workflow history can grow quickly and may need pagination/retention policies.
 - File metadata and storage lifecycle policies should be defined before large evidence uploads.
@@ -67,26 +77,31 @@ This document captures the production-readiness assessment for RC1. Feature deve
 - Enforce HTTPS at the ingress/proxy layer.
 - Use secure, provider-managed secrets instead of local `.env` files in production.
 - Add rate limiting and lockout controls for authentication.
+- Add rate limiting for public search and public listing routes.
 - Restrict upload buckets by policy and validate access paths.
 - Add maximum upload size checks before signed URL issuance and after upload completion.
 - Add CSP after confirming asset and image source requirements.
 - Review RBAC permissions before onboarding real users.
 - Add audit log retention and export policy.
 - Run dependency audit and patch moderate/high vulnerabilities before public exposure.
+- Verify public pages never expose private evidence URLs, workflow notes, audit records, notifications, activity metadata, or internal user IDs after each schema change.
 
-## RC1 Decision
+## v1.1.0-rc1 Decision
 
-RC1 is suitable for:
+`v1.1.0-rc1` is suitable for:
 
 - Stakeholder demonstration
+- Manual public website visual review
+- Screenshot capture
 - Local deployment testing
 - Internal workflow QA
 - Architecture review
 - Controlled pilot testing with demo data
 
-RC1 is not yet suitable for:
+`v1.1.0-rc1` is not yet suitable for:
 
 - Public internet exposure without a reverse proxy and rate limits
 - Production evidence storage without storage policy review
 - High-concurrency multi-user production workloads
 - Regulated production use without expanded audit/export/retention controls
+- Final production launch before hosted backup/restore and monitoring are tested

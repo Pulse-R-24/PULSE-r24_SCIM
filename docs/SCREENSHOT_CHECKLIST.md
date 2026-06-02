@@ -1,39 +1,117 @@
-# RC1 Screenshot Checklist
+# v1.1.0-rc1 Screenshot Checklist
 
-Release: `PULSE-r24_SCIM v1.0.1-rc1`
+Release: `PULSE-r24_SCIM v1.1.0-rc1`
 
-Goal: capture a clean stakeholder-ready screenshot set that demonstrates the validated RC1 workflow and dark intelligence dashboard identity.
+Goal: capture a clean stakeholder-ready screenshot set showing both the public PULSE-R24 website and the protected private dashboard workflow.
 
 ## Screenshot Standards
 
-- [ ] Use the deployed RC1 environment or a clean local run.
+- [ ] Use the deployed `v1.1.0-rc1` environment or a clean local run.
 - [ ] Use the NEW PULSE-r24_SCIM Supabase project.
 - [ ] Use a fresh browser profile or private window.
 - [ ] Hide browser bookmarks and unrelated tabs.
 - [ ] Use desktop viewport first, recommended `1440x900` or wider.
 - [ ] Capture mobile or tablet only if specifically requested.
-- [ ] Avoid exposing real secrets, tokens, browser extensions, or local file paths.
+- [ ] Avoid exposing real secrets, tokens, browser extensions, local file paths, or Supabase keys.
 - [ ] Use the same timestamped demo report across workflow screenshots where possible.
+- [ ] Do not show private evidence URLs, workflow comments, audit logs, notifications for other users, or internal user IDs on public screenshots.
 
 ## Suggested File Names
 
 Use a consistent naming pattern:
 
 ```text
-01-login.png
-02-dashboard.png
-03-report-editor.png
-04-evidence-library.png
-05-review-queue.png
-06-assigned-reviews.png
-07-workflow-history.png
-08-notifications.png
-09-activity-feed.png
-10-search.png
-11-analytics.png
+01-public-homepage.png
+02-public-news-listing.png
+03-public-article-detail.png
+04-public-category-page.png
+05-public-latest-page.png
+06-public-search.png
+07-login.png
+08-dashboard.png
+09-report-editor.png
+10-evidence-library.png
+11-review-queue.png
+12-assigned-reviews.png
+13-workflow-history.png
+14-notifications.png
+15-activity-feed.png
+16-private-search.png
+17-analytics.png
 ```
 
-## 1. Login
+## Public Screenshots
+
+### 1. Public Homepage
+
+- Route: `/`
+- Account: not logged in
+- Capture:
+  - PULSE-R24 masthead.
+  - Public navbar and staff login link.
+  - Hero section.
+  - Live published ticker style.
+  - Threat-map inspired visual section.
+  - Published report cards or public empty state.
+  - Footer.
+- Suggested file: `01-public-homepage.png`
+
+### 2. News Listing
+
+- Route: `/news`
+- Account: not logged in
+- Capture:
+  - Published intelligence listing.
+  - Category/filter controls.
+  - Published report cards.
+  - Public empty state if no published reports exist.
+- Suggested file: `02-public-news-listing.png`
+
+### 3. Article Detail
+
+- Route: `/news/[slug]`
+- Account: not logged in
+- Capture:
+  - Public article title.
+  - Published date, category, tags, byline, read time.
+  - Markdown article body.
+  - Share/copy/print toolbar if visible.
+  - Related reports if available.
+- Suggested file: `03-public-article-detail.png`
+
+### 4. Category Page
+
+- Route: `/category/[slug]`
+- Account: not logged in
+- Capture:
+  - Category heading.
+  - Published reports in that category.
+  - Public filter controls.
+- Suggested file: `04-public-category-page.png`
+
+### 5. Latest Page
+
+- Route: `/latest`
+- Account: not logged in
+- Capture:
+  - Latest published reports.
+  - Ticker section.
+  - Report card grid.
+- Suggested file: `05-public-latest-page.png`
+
+### 6. Public Search
+
+- Route: `/public-search`
+- Account: not logged in
+- Capture:
+  - Public-only search input.
+  - Query results for published reports.
+  - Empty state if the query has no published matches.
+- Suggested file: `06-public-search.png`
+
+## Private Screenshots
+
+### 7. Login
 
 - Route: `/auth/signin`
 - Account: any demo user before login
@@ -42,34 +120,35 @@ Use a consistent naming pattern:
   - Dark visual style is visible.
   - No error banner is present.
   - Browser URL shows `/auth/signin`.
-- Suggested file: `01-login.png`
+- Suggested file: `07-login.png`
 
-## 2. Dashboard
+### 8. Dashboard
 
 - Route: `/dashboard`
-- Account: analyst, reviewer, or publisher
+- Account: analyst, reviewer, publisher, or admin
 - Capture:
   - Dashboard command center.
   - Summary widgets.
   - Recent activity or notification widget.
   - Quick actions.
   - Dark intelligence/SOC visual identity.
-- Suggested file: `02-dashboard.png`
+- Suggested file: `08-dashboard.png`
 
-## 3. Report Editor
+### 9. Report Editor
 
 - Route: `/dashboard/reports/new` or `/dashboard/reports/[id]/edit`
 - Account: analyst
 - Capture:
   - Report title input.
-  - Summary/body markdown editor.
+  - Markdown editor.
   - Category and tag controls.
   - Draft save or auto-save state.
   - Workflow status panel.
   - Evidence attachment panel if visible.
-- Suggested file: `03-report-editor.png`
+  - `View Public Report` link only if report is `PUBLISHED`.
+- Suggested file: `09-report-editor.png`
 
-## 4. Evidence Library
+### 10. Evidence Library
 
 - Route: `/dashboard/evidence`
 - Account: analyst or publisher
@@ -79,9 +158,9 @@ Use a consistent naming pattern:
   - Search/filter controls.
   - Uploaded-by and created-date metadata.
   - Evidence preview panel if useful.
-- Suggested file: `04-evidence-library.png`
+- Suggested file: `10-evidence-library.png`
 
-## 5. Review Queue
+### 11. Review Queue
 
 - Route: `/dashboard/review-queue`
 - Account: reviewer, editor, or admin
@@ -90,9 +169,9 @@ Use a consistent naming pattern:
   - Workflow status badges.
   - Assignment or review metadata.
   - Empty state only if no records exist.
-- Suggested file: `05-review-queue.png`
+- Suggested file: `11-review-queue.png`
 
-## 6. Assigned Reviews
+### 12. Assigned Reviews
 
 - Route: `/dashboard/assigned-reviews`
 - Account: reviewer
@@ -101,9 +180,9 @@ Use a consistent naming pattern:
   - Filters for workflow status.
   - Review action panel if visible.
   - Review comment box if opened.
-- Suggested file: `06-assigned-reviews.png`
+- Suggested file: `12-assigned-reviews.png`
 
-## 7. Workflow History
+### 13. Workflow History
 
 - Route: `/dashboard/workflow-history`
 - Account: analyst, reviewer, publisher, or admin
@@ -113,9 +192,9 @@ Use a consistent naming pattern:
   - Previous and next states where available.
   - Review comments or notes where available.
   - Timeline or detail panel.
-- Suggested file: `07-workflow-history.png`
+- Suggested file: `13-workflow-history.png`
 
-## 8. Notifications
+### 14. Notifications
 
 - Route: `/dashboard/notifications`
 - Account: user with recent workflow activity
@@ -125,9 +204,9 @@ Use a consistent naming pattern:
   - Notification type badges.
   - Related report/evidence links.
   - Mark-all-read control if visible.
-- Suggested file: `08-notifications.png`
+- Suggested file: `14-notifications.png`
 
-## 9. Activity Feed
+### 15. Activity Feed
 
 - Route: `/dashboard/activity`
 - Account: any demo user
@@ -137,9 +216,9 @@ Use a consistent naming pattern:
   - Related report/evidence links.
   - Activity type badges.
   - Date grouping if visible.
-- Suggested file: `09-activity-feed.png`
+- Suggested file: `15-activity-feed.png`
 
-## 10. Search
+### 16. Private Search
 
 - Route: `/dashboard/search`
 - Account: analyst or admin
@@ -149,9 +228,9 @@ Use a consistent naming pattern:
   - Results across reports, evidence, workflow, or activity.
   - Type badges and snippets.
   - Link to related item.
-- Suggested file: `10-search.png`
+- Suggested file: `16-private-search.png`
 
-## 11. Analytics
+### 17. Analytics
 
 - Route: `/dashboard/analytics`
 - Account: publisher or admin
@@ -161,21 +240,31 @@ Use a consistent naming pattern:
   - Evidence type chart.
   - Activity or publication trend.
   - Empty states only if a fresh database has no activity.
-- Suggested file: `11-analytics.png`
+- Suggested file: `17-analytics.png`
 
-## 12. Optional Supporting Screenshots
+## Optional Supporting Screenshots
 
 - [ ] `/dashboard/reports/[id]/evidence` - report-specific evidence management.
 - [ ] `/dashboard/reports/[id]/edit` - editing a report after changes requested.
 - [ ] Notification bell/dropdown in the dashboard shell.
-- [ ] Published or archived report detail state.
+- [ ] Published report with `View Public Report` link in editor.
+- [ ] Archived report hidden from public listing.
 - [ ] Supabase Storage `evidence` bucket file list, with sensitive project keys hidden.
 
-## 13. Final Review
+## Public Visibility Screenshot Checks
+
+- [ ] Draft report is not visible on `/news`, `/latest`, `/public-search`, or `/news/[slug]`.
+- [ ] Under-review report is not visible publicly.
+- [ ] Approved-but-unpublished report is not visible publicly.
+- [ ] Published report is visible publicly.
+- [ ] Archived report disappears publicly.
+- [ ] Private evidence is not visible publicly.
+
+## Final Review
 
 - [ ] Screenshots are in logical demo order.
 - [ ] No secrets are visible.
 - [ ] No browser error overlays are visible.
 - [ ] No localhost-only caveats are visible unless intentionally documenting local setup.
-- [ ] Screenshots match the validated RC1 scope.
-- [ ] Screenshots do not imply AI, OSINT, RSS, realtime, vector search, semantic search, or threat correlation features exist in RC1.
+- [ ] Screenshots match the validated `v1.1.0-rc1` scope.
+- [ ] Screenshots do not imply AI, OSINT, RSS, realtime, vector search, semantic search, or threat correlation features exist.
