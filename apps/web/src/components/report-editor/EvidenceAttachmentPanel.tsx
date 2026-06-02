@@ -73,21 +73,21 @@ export function EvidenceAttachmentPanel({ reportId, evidence, disabled }: Eviden
         )}
 
         <div className="space-y-2">
-          <input
+          <input suppressHydrationWarning
             value={title}
             disabled={disabled || !reportId}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Evidence title"
             className="w-full rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 disabled:opacity-60"
           />
-          <input
+          <input suppressHydrationWarning
             value={url}
             disabled={disabled || !reportId}
             onChange={(event) => setUrl(event.target.value)}
             placeholder="Evidence URL"
             className="w-full rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 disabled:opacity-60"
           />
-          <textarea
+          <textarea suppressHydrationWarning
             value={description}
             disabled={disabled || !reportId}
             onChange={(event) => setDescription(event.target.value)}

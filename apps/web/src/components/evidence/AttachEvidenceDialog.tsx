@@ -56,7 +56,7 @@ export function AttachEvidenceDialog({ reportId, evidence, attachedIds }: Attach
         <div className="mt-4 space-y-3">
           <div className="relative">
             <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
+            <input suppressHydrationWarning
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search existing evidence..."

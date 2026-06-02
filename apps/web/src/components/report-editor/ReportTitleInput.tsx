@@ -6,7 +6,7 @@ interface ReportTitleInputProps {
 
 export function ReportTitleInput({ value, disabled, onChange }: ReportTitleInputProps) {
   return (
-    <input
+    <input suppressHydrationWarning
       value={value}
       disabled={disabled}
       onChange={(event) => onChange(event.target.value)}

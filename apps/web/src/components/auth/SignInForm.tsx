@@ -49,14 +49,14 @@ export function SignInForm({ errorMessage }: SignInFormProps) {
       {csrfError ? <div className="mb-4 rounded-xl bg-amber-900/60 p-4 text-amber-100">{csrfError}</div> : null}
 
       <form action="/api/auth/callback/credentials" method="post" className="space-y-4">
-        <input type="hidden" name="csrfToken" value={csrfToken} />
-        <input type="hidden" name="callbackUrl" value="/dashboard" />
+        <input suppressHydrationWarning type="hidden" name="csrfToken" value={csrfToken} />
+        <input suppressHydrationWarning type="hidden" name="callbackUrl" value="/dashboard" />
 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-slate-300">
             Email
           </label>
-          <input
+          <input suppressHydrationWarning
             id="email"
             name="email"
             type="email"
@@ -69,7 +69,7 @@ export function SignInForm({ errorMessage }: SignInFormProps) {
           <label htmlFor="password" className="block text-sm font-medium text-slate-300">
             Password
           </label>
-          <input
+          <input suppressHydrationWarning
             id="password"
             name="password"
             type="password"

@@ -76,7 +76,7 @@ export function AssignedReviewsClient() {
 
         <div className="relative w-full lg:w-96">
           <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
+          <input suppressHydrationWarning
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search title, category, tag..."

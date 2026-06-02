@@ -27,7 +27,7 @@ export function SearchFiltersPanel({ filters, categories, tags, onChange }: Sear
         <select value={filters.evidenceType} onChange={(event) => update({ evidenceType: event.target.value })} className="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200">
           {EVIDENCE_OPTIONS.map((item) => <option key={item} value={item}>{item === 'ALL' ? 'All evidence types' : item}</option>)}
         </select>
-        <input value={filters.actor} onChange={(event) => update({ actor: event.target.value })} placeholder="Author or actor" className="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
+        <input suppressHydrationWarning value={filters.actor} onChange={(event) => update({ actor: event.target.value })} placeholder="Author or actor" className="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">

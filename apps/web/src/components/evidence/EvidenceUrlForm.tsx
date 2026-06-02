@@ -44,9 +44,9 @@ export function EvidenceUrlForm({ reportId, disabled }: EvidenceUrlFormProps) {
         <Link2 className="w-4 h-4 text-blue-400" />
         URL Evidence
       </div>
-      <input value={title} disabled={disabled} onChange={(event) => setTitle(event.target.value)} placeholder="Evidence title" className="w-full rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
-      <input value={url} disabled={disabled} onChange={(event) => setUrl(event.target.value)} placeholder="https://source.example/item" className="w-full rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
-      <textarea value={description} disabled={disabled} onChange={(event) => setDescription(event.target.value)} placeholder="Evidence note" rows={3} className="w-full resize-none rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
+      <input suppressHydrationWarning value={title} disabled={disabled} onChange={(event) => setTitle(event.target.value)} placeholder="Evidence title" className="w-full rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
+      <input suppressHydrationWarning value={url} disabled={disabled} onChange={(event) => setUrl(event.target.value)} placeholder="https://source.example/item" className="w-full rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
+      <textarea suppressHydrationWarning value={description} disabled={disabled} onChange={(event) => setDescription(event.target.value)} placeholder="Evidence note" rows={3} className="w-full resize-none rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600" />
       <Button size="sm" icon={<Plus className="w-4 h-4" />} disabled={disabled || !title.trim() || !url.trim()} loading={mutation.isPending} onClick={() => mutation.mutate()}>
         Add URL Evidence
       </Button>

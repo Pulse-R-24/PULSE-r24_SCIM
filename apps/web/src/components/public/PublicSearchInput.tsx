@@ -5,7 +5,7 @@ export function PublicSearchInput({ defaultValue = '', action = '/public-search'
     <form action={action} className="flex w-full flex-col gap-3 sm:flex-row">
       <div className="relative flex-1">
         <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-        <input
+        <input suppressHydrationWarning
           name="q"
           defaultValue={defaultValue}
           placeholder="Search published bulletins..."

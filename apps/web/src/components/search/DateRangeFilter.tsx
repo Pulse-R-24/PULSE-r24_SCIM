@@ -13,7 +13,7 @@ export function DateRangeFilter({
     <div className="grid grid-cols-2 gap-3">
       <label className="space-y-1">
         <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">From</span>
-        <input
+        <input suppressHydrationWarning
           type="date"
           value={dateFrom}
           onChange={(event) => onDateFromChange(event.target.value)}
@@ -22,7 +22,7 @@ export function DateRangeFilter({
       </label>
       <label className="space-y-1">
         <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">To</span>
-        <input
+        <input suppressHydrationWarning
           type="date"
           value={dateTo}
           onChange={(event) => onDateToChange(event.target.value)}

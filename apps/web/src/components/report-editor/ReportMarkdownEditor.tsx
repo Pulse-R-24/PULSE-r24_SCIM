@@ -63,7 +63,7 @@ export function ReportMarkdownEditor({
           {value.trim() ? renderPreview(value) : <p className="text-sm text-slate-600">No preview content.</p>}
         </div>
       ) : (
-        <textarea
+        <textarea suppressHydrationWarning
           value={value}
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}

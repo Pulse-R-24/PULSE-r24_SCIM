@@ -5,7 +5,7 @@ interface ReviewCommentBoxProps {
 
 export function ReviewCommentBox({ value, onChange }: ReviewCommentBoxProps) {
   return (
-    <textarea
+    <textarea suppressHydrationWarning
       value={value}
       onChange={(e) => onChange(e.target.value)}
       rows={3}

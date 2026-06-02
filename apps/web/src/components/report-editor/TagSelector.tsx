@@ -23,7 +23,7 @@ export function TagSelector({ tags, selectedNames, disabled, onChange }: TagSele
     <div className="space-y-3">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tags</p>
       <div className="flex gap-2">
-        <input
+        <input suppressHydrationWarning
           value={draft}
           disabled={disabled}
           onChange={(event) => setDraft(event.target.value)}

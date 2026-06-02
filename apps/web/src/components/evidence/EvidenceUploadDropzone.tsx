@@ -80,7 +80,7 @@ export function EvidenceUploadDropzone({ reportId, disabled }: EvidenceUploadDro
       <UploadCloud className="mx-auto h-7 w-7 text-slate-600" />
       <p className="mt-2 text-sm font-semibold text-slate-300">Upload file evidence</p>
       <p className="mt-1 text-xs text-slate-600">Uses the existing signed upload and media registration pipeline.</p>
-      <input
+      <input suppressHydrationWarning
         ref={inputRef}
         type="file"
         className="hidden"

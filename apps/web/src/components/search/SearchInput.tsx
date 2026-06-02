@@ -4,7 +4,7 @@ export function SearchInput({ value, onChange }: { value: string; onChange: (val
   return (
     <div className="relative w-full">
       <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
-      <input
+      <input suppressHydrationWarning
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder="Search reports, evidence, workflow, activity..."

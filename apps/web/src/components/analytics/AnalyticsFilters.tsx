@@ -11,14 +11,14 @@ export function AnalyticsFilters({ filters, options, onChange }: AnalyticsFilter
 
   return (
     <div className="grid gap-3 rounded-xl border border-white/10 bg-white/[0.025] p-4 md:grid-cols-2 xl:grid-cols-5">
-      <input
+      <input suppressHydrationWarning
         type="date"
         value={filters.dateFrom}
         onChange={(event) => update({ dateFrom: event.target.value })}
         className="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2 text-sm text-slate-200"
         aria-label="Start date"
       />
-      <input
+      <input suppressHydrationWarning
         type="date"
         value={filters.dateTo}
         onChange={(event) => update({ dateTo: event.target.value })}

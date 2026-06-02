@@ -97,7 +97,7 @@ export function EvidenceLibraryClient() {
         <div className="space-y-3">
           <div className="relative w-full lg:w-96">
             <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search evidence, URL, report..." className="w-full rounded-lg border border-slate-700/60 bg-slate-900/60 pl-10 pr-3 py-2 text-sm text-slate-200 placeholder:text-slate-500" />
+            <input suppressHydrationWarning value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search evidence, URL, report..." className="w-full rounded-lg border border-slate-700/60 bg-slate-900/60 pl-10 pr-3 py-2 text-sm text-slate-200 placeholder:text-slate-500" />
           </div>
           <div className="flex flex-wrap gap-2">
             {TYPE_OPTIONS.map((item) => (
