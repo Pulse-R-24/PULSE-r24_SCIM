@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 
 export function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('glass-card p-5', className)}>
+    <div className={cn('glass-card relative overflow-hidden p-5 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-rose-500/40 before:via-cyan-300/20 before:to-transparent', className)}>
       {children}
     </div>
   )

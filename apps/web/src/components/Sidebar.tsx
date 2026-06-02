@@ -37,18 +37,18 @@ export function Sidebar() {
                       bg-gradient-to-b from-[#060d1f] via-[#080f22] to-[#070c1a]
                       border-r border-[rgba(99,130,210,0.10)]">
       {/* Logo */}
-      <div className="px-3 py-5 sm:px-5 border-b border-[rgba(99,130,210,0.10)]">
+      <div className="px-3 py-5 sm:px-5 border-b border-rose-500/10">
         <div className="flex items-center justify-center gap-2.5 sm:justify-start">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-rose-700 to-red-950
                           flex items-center justify-center animate-pulse-glow">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <div className="hidden sm:block">
-            <span className="text-sm font-bold text-white tracking-wide">PULSE</span>
-            <span className="text-sm font-bold text-rose-400">-R24</span>
+            <span className="font-editorial text-lg font-black text-white tracking-wide">PULSE</span>
+            <span className="font-editorial text-lg font-black text-rose-400">-R24</span>
           </div>
         </div>
-        <p className="hidden text-[10px] text-slate-600 mt-0.5 pl-9 sm:block">Intelligence Platform</p>
+        <p className="hidden text-[10px] text-slate-600 mt-0.5 pl-9 sm:block">Private Editorial Control</p>
       </div>
 
       {/* Primary nav */}

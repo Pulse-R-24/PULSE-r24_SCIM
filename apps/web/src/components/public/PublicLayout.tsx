@@ -4,7 +4,7 @@ import { PublicNavbar } from '@/components/public/PublicNavbar'
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#f8f5ef] font-sans text-slate-950">
+    <div className="public-paper min-h-screen font-sans text-slate-950">
       <PublicNavbar />
       <main>{children}</main>
       <PublicFooter />

@@ -6,8 +6,8 @@ import { PublicShareToolbar } from '@/components/public/PublicShareToolbar'
 
 export function PublicArticleHeader({ report }: { report: PublicReportDetail }) {
   return (
-    <header className="border-b border-slate-900/10 bg-white">
-      <div className="mx-auto max-w-4xl px-4 pb-10 pt-8 sm:px-6 lg:px-8">
+    <header className="border-b border-slate-900/10 bg-white/92">
+      <div className="mx-auto max-w-5xl px-4 pb-12 pt-10 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center gap-2 text-xs text-slate-400">
           <Link href="/" className="hover:text-rose-800">Home</Link>
           <ChevronRight className="h-3 w-3" />
@@ -24,7 +24,7 @@ export function PublicArticleHeader({ report }: { report: PublicReportDetail }) 
           <span>{getIssueNumber(report.published_at)}</span>
           {report.category && <span className="rounded-full border border-rose-900/10 bg-rose-50 px-3 py-1 text-rose-900">{report.category.name}</span>}
         </div>
-        <h1 className="text-4xl font-black leading-tight tracking-tight text-slate-950 sm:text-5xl">{report.title}</h1>
+        <h1 className="font-editorial text-5xl font-black leading-[0.98] tracking-tight text-slate-950 sm:text-6xl">{report.title}</h1>
         <p className="mt-6 border-l-4 border-rose-700 pl-5 text-lg leading-8 text-slate-600">{report.excerpt}</p>
         <div className="mt-7 flex flex-col gap-4 border-t border-slate-900/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">

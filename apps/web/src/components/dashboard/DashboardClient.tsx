@@ -85,15 +85,16 @@ export function DashboardClient() {
 
 function DashboardHeader() {
   return (
-    <header className="relative overflow-hidden rounded-2xl border border-blue-500/15 bg-gradient-to-br from-blue-950/40 via-slate-950/80 to-cyan-950/30 p-6">
-      <div className="absolute right-8 top-6 h-24 w-24 rounded-full bg-blue-500/10 blur-2xl" />
+    <header className="relative overflow-hidden rounded-2xl border border-rose-500/15 bg-[radial-gradient(circle_at_top_right,rgba(190,18,60,0.22),transparent_32%),linear-gradient(135deg,rgba(15,23,42,0.94),rgba(2,6,23,0.96))] p-6 shadow-2xl shadow-slate-950/20">
+      <div className="absolute right-8 top-6 h-24 w-24 rounded-full bg-rose-500/10 blur-2xl" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-rose-500/60 via-cyan-300/25 to-transparent" />
       <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-blue-200">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-rose-500/20 bg-rose-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-rose-200">
             <Radar className="h-3.5 w-3.5" />
-            Editorial Operations Node
+            PULSE-R24 Editorial Operations
           </div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-100 lg:text-4xl">Strategic Intelligence Dashboard</h1>
+          <h1 className="font-editorial text-4xl font-black tracking-tight text-slate-100 lg:text-5xl">Strategic Intelligence Dashboard</h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
             Monitor report production, review pressure, evidence intake, notifications, and operator activity from one command surface.
           </p>

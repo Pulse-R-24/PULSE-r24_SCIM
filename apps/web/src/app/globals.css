@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -44,6 +44,20 @@ body {
 
 code, pre, kbd {
   font-family: 'JetBrains Mono', monospace;
+}
+
+.font-editorial {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.public-paper {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(159,18,57,0.08), transparent 28%),
+    linear-gradient(180deg, #fbfaf7 0%, #f8f5ef 48%, #f3eee5 100%);
+}
+
+.public-rule-label {
+  @apply inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.28em] text-slate-500;
 }
 
 /* ── Scrollbar ─────────────────────────────── */
