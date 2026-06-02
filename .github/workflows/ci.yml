@@ -52,6 +52,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Generate Prisma client
         run: npm run prisma:generate
 
@@ -72,3 +75,6 @@ jobs:
 
       - name: Production build
         run: npm run build --workspace @pulse-r24/web
+
+      - name: Browser smoke tests
+        run: npm run test:e2e

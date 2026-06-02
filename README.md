@@ -46,6 +46,7 @@ copy .env.example .env
 npm run prisma:generate
 npm run db:push
 npm run seed:bootstrap
+npx playwright install chromium
 npm run dev --workspace @pulse-r24/web
 ```
 
@@ -89,6 +90,8 @@ npm run build --workspace @pulse-r24/web
 npm run lint
 npm run typecheck
 npm test
+npm run test:e2e
+npm run test:e2e:ui
 npm run prisma:generate
 npm run db:push
 npm run seed:workflow

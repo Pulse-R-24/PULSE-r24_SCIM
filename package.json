@@ -13,6 +13,10 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "node --test tests/**/*.test.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report",
     "prisma:generate": "prisma generate --schema packages/database/prisma/schema.prisma",
     "db:push": "node ./scripts/db/pushSchema.js",
     "seed:workflow": "node ./scripts/seed/seedWorkflowStates.js",
@@ -37,6 +41,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.14.0",

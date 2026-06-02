@@ -30,7 +30,7 @@ This document captures the production-readiness assessment for the public-first 
 - Rate limiting is not implemented at the application layer.
 - Public routes should be tested behind the final production CDN/proxy cache behavior before stakeholder publication.
 - File upload size limits are not enforced at every layer.
-- No automated browser/e2e test suite exists yet.
+- Initial Playwright browser smoke tests exist, but comprehensive browser/e2e coverage is not complete yet.
 - Contract tests validate code paths statically but do not replace database-backed integration tests.
 - No production observability stack is configured.
 - No centralized error reporting is configured.
@@ -52,7 +52,7 @@ This document captures the production-readiness assessment for the public-first 
 - Add request logging, structured audit exports, and alerting.
 - Add health/readiness endpoints for container orchestration.
 - Add database-backed service integration tests.
-- Add browser smoke tests for the complete public and private demo workflow.
+- Expand Playwright coverage for the complete public and private demo workflow.
 - Add storage-specific upload limits and antivirus/malware scanning before broader file upload use.
 - Add Sentry or equivalent error monitoring.
 - Add dependency scanning in CI.
