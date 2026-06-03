@@ -1,7 +1,9 @@
 import Link from 'next/link'
+import type { AuthSession } from '@pulse-r24/auth'
 import { Globe, Mail } from 'lucide-react'
+import { getDisplayName } from '@/components/account/accountUtils'
 
-export function PublicFooter() {
+export function PublicFooter({ session }: { session: AuthSession | null }) {
   return (
     <footer className="border-t border-white/5 bg-[#070B24] px-4 pb-10 pt-20 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -74,8 +76,12 @@ export function PublicFooter() {
             <a href="mailto:editorial@pulser24.in" className="flex items-center gap-2 text-white/55 hover:text-rose-400">
               <Mail className="h-4 w-4" /> editorial@pulser24.in
             </a>
-            <Link href="/auth/signin" className="flex items-center gap-2 text-white/55 hover:text-rose-400">
-              Staff Portal
+            <Link
+              href={session ? '/dashboard' : '/auth/signin'}
+              aria-label={session ? `Open dashboard for ${getDisplayName(session)}` : 'Footer staff access'}
+              className="flex items-center gap-2 text-white/55 hover:text-rose-400"
+            >
+              {session ? 'Dashboard' : 'Staff Login'}
             </Link>
           </div>
             <div className="mt-6 flex gap-3">

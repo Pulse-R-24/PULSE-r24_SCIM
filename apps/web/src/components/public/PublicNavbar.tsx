@@ -1,7 +1,9 @@
 import Link from 'next/link'
+import type { AuthSession } from '@pulse-r24/auth'
 import { Menu, Search, ShieldCheck } from 'lucide-react'
+import { PublicAccountMenu } from '@/components/public/PublicAccountMenu'
 
-export function PublicNavbar() {
+export function PublicNavbar({ session }: { session: AuthSession | null }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-900/5 bg-white/88 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
@@ -30,9 +32,7 @@ export function PublicNavbar() {
           <Link href="/public-search" className="hidden items-center gap-1.5 hover:text-[#8b0000] md:inline-flex">
             <Search className="h-3.5 w-3.5" /> Search
           </Link>
-          <Link href="/auth/signin" className="rounded-full border border-[#8b0000]/10 bg-[#8b0000]/5 px-3 py-1.5 text-[#600000] shadow-sm hover:bg-[#8b0000]/10">
-            Staff Login
-          </Link>
+          <PublicAccountMenu session={session} />
           <div className="hidden h-14 w-16 items-center justify-center border-l border-slate-100 pl-3 md:flex">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-[10px] font-black uppercase tracking-widest text-[#8b0000] shadow-sm">
               ISSP

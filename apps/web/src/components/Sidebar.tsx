@@ -11,6 +11,7 @@ import {
   BarChart3,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { SignOutButton } from '@/components/auth/SignOutButton'
 
 const NAV_ITEMS = [
   { label: 'Dashboard',        href: '/dashboard',                      icon: LayoutDashboard },
@@ -90,13 +91,13 @@ export function Sidebar() {
 
       {/* Footer */}
       <div className="px-3 py-4 border-t border-[rgba(99,130,210,0.10)]">
-        <Link href="/api/auth/signout"
-          className="nav-link text-red-400/70 hover:text-red-400 hover:bg-red-500/5"
-          aria-label="Sign out"
-          title="Sign out">
+        <SignOutButton
+          label="Sign out"
+          className="nav-link w-full border-0 bg-transparent text-red-400/70 hover:bg-red-500/5 hover:text-red-400"
+        >
           <LogOut className="w-4 h-4" />
           <span className="hidden sm:inline">Sign out</span>
-        </Link>
+        </SignOutButton>
       </div>
     </aside>
   )
