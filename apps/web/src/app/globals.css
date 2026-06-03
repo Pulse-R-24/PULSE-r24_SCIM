@@ -52,8 +52,8 @@ code, pre, kbd {
 
 .public-paper {
   background:
-    radial-gradient(circle at 12% 0%, rgba(159,18,57,0.08), transparent 28%),
-    linear-gradient(180deg, #fbfaf7 0%, #f8f5ef 48%, #f3eee5 100%);
+    radial-gradient(circle at 12% 0%, rgba(139,0,0,0.06), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #fbfaf7 52%, #f6f3ed 100%);
 }
 
 .public-rule-label {

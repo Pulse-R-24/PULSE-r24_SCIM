@@ -24,20 +24,20 @@ function getPoints(reports: PublicReportSummary[]) {
   }))
 }
 
-export function PublicThreatMap({ reports }: { reports: PublicReportSummary[] }) {
+export function PublicThreatMap({ reports, compact = false }: { reports: PublicReportSummary[]; compact?: boolean }) {
   const points = getPoints(reports)
 
   return (
-    <section className="relative overflow-hidden rounded-[1.5rem] border border-slate-800 bg-[#050814] p-5 text-white shadow-2xl shadow-slate-950/20">
+    <section className="relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#050814] p-3 text-white shadow-2xl shadow-slate-950/20 md:p-4">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:40px_40px] opacity-40" />
       <div className="absolute left-1/2 top-1/2 h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_0deg,transparent,rgba(190,18,60,0.18),transparent)] blur-sm" />
-      <div className="relative h-[340px] rounded-3xl border border-white/10 bg-slate-950/70 md:h-[460px]">
+      <div className={`relative rounded-2xl border border-white/10 bg-slate-950/70 ${compact ? 'h-[360px] md:h-[470px]' : 'h-[340px] md:h-[460px]'}`}>
         <div className="absolute left-4 top-4 rounded-xl border border-slate-700/70 bg-slate-950/90 p-3">
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-            Published Signal Map
+            Live Sensor Grid
           </div>
-          <p className="mt-1 text-[10px] text-slate-500">Visual index of public reports</p>
+          <p className="mt-1 text-[10px] text-slate-500">{points.length} public bulletin signals</p>
         </div>
         <div className="absolute inset-10 rounded-[45%] border border-white/10 opacity-50" />
         <div className="absolute left-[30%] top-[24%] text-[10px] uppercase tracking-[0.2em] text-white/20">Delhi</div>

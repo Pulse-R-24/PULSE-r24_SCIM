@@ -17,10 +17,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <PublicLayout>
-      <section className="mx-auto max-w-7xl space-y-8 px-4 py-14 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl space-y-8 px-4 py-16 sm:px-6 lg:px-8">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.28em] text-rose-800">Domain Archive</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950">{category?.name ?? 'Category'}</h1>
+          <div className="public-rule-label">
+            <span className="h-px w-10 bg-[#8b0000]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#8b0000]" />
+            <span>Domain Archive</span>
+          </div>
+          <h1 className="font-editorial mt-5 text-5xl font-black tracking-tight text-slate-950">{category?.name ?? 'Category'}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Published reports classified under this public intelligence domain.</p>
         </div>
         <PublicFilters categories={result.categories} activeCategory={slug} />

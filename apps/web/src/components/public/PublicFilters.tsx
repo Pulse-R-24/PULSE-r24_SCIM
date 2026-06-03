@@ -12,8 +12,8 @@ export function PublicFilters({
   query?: string
 }) {
   return (
-    <section className="border-y border-slate-900/10 bg-white/85 p-4 shadow-sm backdrop-blur sm:p-5">
-      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+    <section className="bg-transparent">
+      <div className="flex flex-col gap-5">
         <PublicSearchInput defaultValue={query} />
         <PublicCategoryPills categories={categories} activeSlug={activeCategory} />
       </div>

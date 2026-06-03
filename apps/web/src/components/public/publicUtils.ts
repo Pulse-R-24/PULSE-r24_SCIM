@@ -9,12 +9,14 @@ export function formatPublicDate(date: string | Date) {
 }
 
 export function formatLongPublicDate(date: string | Date) {
-  return new Intl.DateTimeFormat('en-IN', {
-    weekday: 'long',
+  const current = typeof date === 'string' ? new Date(date) : date
+  const dayMonthYear = new Intl.DateTimeFormat('en-IN', {
     day: 'numeric',
-    month: 'long',
+    month: 'short',
     year: 'numeric'
-  }).format(typeof date === 'string' ? new Date(date) : date)
+  }).format(current)
+  const weekday = new Intl.DateTimeFormat('en-IN', { weekday: 'long' }).format(current)
+  return `${dayMonthYear} | ${weekday}`
 }
 
 export function getIssueNumber(date: string | Date = new Date()) {

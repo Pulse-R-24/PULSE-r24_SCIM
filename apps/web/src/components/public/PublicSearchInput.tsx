@@ -9,10 +9,10 @@ export function PublicSearchInput({ defaultValue = '', action = '/public-search'
           name="q"
           defaultValue={defaultValue}
           placeholder="Search published bulletins..."
-          className="w-full rounded-sm border border-slate-900/10 bg-white py-3 pl-11 pr-4 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-rose-800/40 focus:ring-4 focus:ring-rose-900/5"
+          className="w-full border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm font-semibold text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#8b0000]/50 focus:ring-4 focus:ring-[#8b0000]/5"
         />
       </div>
-      <button className="rounded-sm bg-rose-900 px-6 py-3 text-xs font-black uppercase tracking-[0.18em] text-white hover:bg-rose-800">
+      <button className="bg-[#8b0000] px-6 py-3 text-xs font-black uppercase tracking-[0.18em] text-white hover:bg-[#600000]">
         Search
       </button>
     </form>
