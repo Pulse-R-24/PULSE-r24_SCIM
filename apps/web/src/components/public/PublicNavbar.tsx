@@ -1,44 +1,33 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { AuthSession } from '@pulse-r24/auth'
-import { Menu, Search, ShieldCheck } from 'lucide-react'
 import { PublicAccountMenu } from '@/components/public/PublicAccountMenu'
 
 export function PublicNavbar({ session }: { session: AuthSession | null }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-900/5 bg-white/88 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-2 md:gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm md:h-14 md:w-14">
-            <ShieldCheck className="h-5 w-5 text-[#8b0000]" />
-          </div>
+    <header className="fixed inset-x-0 top-0 z-50 bg-white/96 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-md">
+      <div className="mx-auto grid h-24 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <Image src="/logos/rru-logo.png" alt="Rashtriya Raksha University" width={64} height={64} className="h-12 w-12 object-contain md:h-16 md:w-16" />
           <div className="hidden text-left lg:block">
-            <p className="text-[10px] font-black uppercase leading-tight tracking-[0.22em] text-slate-800">Rashtriya Raksha University</p>
-            <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-slate-400">Puducherry Campus</p>
+            <p className="text-[11px] font-black uppercase leading-tight tracking-[0.18em] text-slate-800">Rashtriya Raksha University</p>
+            <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-slate-400">Puducherry Campus</p>
           </div>
         </Link>
 
-        <Link href="/" className="flex min-w-0 flex-1 flex-col items-center px-1 text-center">
-          <h1 className="font-editorial text-2xl font-black leading-none tracking-tight text-[#8b0000] sm:text-3xl md:text-4xl">
+        <Link href="/" className="flex min-w-0 flex-col items-center px-2 text-center">
+          <h1 className="font-editorial text-2xl font-black leading-none tracking-tight text-[#8b0000] sm:text-3xl md:text-[2.35rem]">
             PULSE-R<span className="align-super text-base">24</span>
           </h1>
-          <p className="hidden text-[8px] font-black uppercase tracking-[0.34em] text-slate-400 sm:block">Daily Corporate Intelligence Bulletin</p>
+          <p className="mt-1 hidden text-[8px] font-black uppercase tracking-[0.34em] text-slate-400 sm:block">The Daily Corporate Intelligence Bulletin</p>
         </Link>
 
-        <nav className="flex items-center justify-end gap-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-600 md:gap-5">
-          <Link href="/" className="hidden hover:text-[#8b0000] xl:inline">Home</Link>
-          <Link href="/#about" className="hidden hover:text-[#8b0000] xl:inline">About</Link>
-          <Link href="/news" className="hidden hover:text-[#8b0000] md:inline">News</Link>
-          <Link href="/latest" className="hidden hover:text-[#8b0000] lg:inline">Latest</Link>
-          <Link href="/public-search" className="hidden items-center gap-1.5 hover:text-[#8b0000] md:inline-flex">
-            <Search className="h-3.5 w-3.5" /> Search
-          </Link>
+        <nav className="flex items-center justify-end gap-3 text-[10px] font-semibold text-slate-600 md:gap-5">
+          <Link href="/#about" className="hidden hover:text-[#8b0000] lg:inline">About Us</Link>
           <PublicAccountMenu session={session} />
-          <div className="hidden h-14 w-16 items-center justify-center border-l border-slate-100 pl-3 md:flex">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-[10px] font-black uppercase tracking-widest text-[#8b0000] shadow-sm">
-              ISSP
-            </div>
+          <div className="hidden h-20 w-24 items-center justify-center border-l border-slate-100 pl-4 md:flex">
+            <Image src="/logos/issp-logo.png" alt="ISSP" width={96} height={72} className="max-h-16 w-auto object-contain" />
           </div>
-          <Menu className="h-5 w-5 text-slate-400 md:hidden" aria-hidden="true" />
         </nav>
       </div>
     </header>
