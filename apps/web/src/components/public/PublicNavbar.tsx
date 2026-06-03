@@ -26,8 +26,8 @@ export function PublicNavbar({ session }: { session: AuthSession | null }) {
           <Link href="/#about" className="hidden hover:text-[#8b0000] lg:inline">About Us</Link>
           <PublicAccountMenu session={session} />
           <div className="hidden h-20 items-center justify-center border-l border-slate-100 pl-5 md:flex">
-            <div className="flex h-20 w-24 items-center justify-center bg-white">
-              <Image src="/logos/issp-logo.png" alt="ISSP" width={88} height={88} className="h-20 w-20 object-contain" />
+            <div className="flex h-20 w-[5.5rem] items-center justify-center bg-white">
+              <Image src="/logos/issp-logo.png" alt="ISSP" width={88} height={88} className="h-20 w-20 translate-y-0.5 object-contain" />
             </div>
           </div>
         </nav>
