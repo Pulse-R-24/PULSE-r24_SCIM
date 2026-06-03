@@ -64,8 +64,8 @@ export function PublicFooter({ session }: { session: AuthSession | null }) {
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/35">Governance</p>
             <div className="mt-5 border border-white/10 bg-white/[0.04] p-4">
               <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center bg-white p-2">
-                  <Image src="/logos/issp-logo.png" alt="ISSP" width={64} height={64} className="h-full w-full object-contain" />
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center bg-white p-2">
+                  <Image src="/logos/issp-logo.png" alt="ISSP" width={80} height={80} className="h-full w-full object-contain" />
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/30">Guided By</p>
