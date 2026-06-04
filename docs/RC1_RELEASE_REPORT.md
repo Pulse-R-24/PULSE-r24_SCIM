@@ -257,3 +257,32 @@ Remote verification:
 ```bash
 git ls-remote --tags origin v1.1.0-rc1
 ```
+
+## v1.1.3-rc1 Map Verification Addendum
+
+Final public map runtime verification passed for the Protomaps/MapLibre India map.
+
+Validated configuration:
+
+- Supabase PMTiles URL works:
+  `https://wrszjsgneolpkcgldngi.supabase.co/storage/v1/object/public/maps/india_z7.pmtiles`
+- Real India Protomaps map renders on the public homepage.
+- `8` Tier-1 city markers render.
+- Marker popup works on desktop.
+- Mobile bottom sheet works.
+- No React hydration warnings were observed.
+- No console errors were observed.
+- Public homepage still loads.
+- Dashboard login and dashboard landing page still work.
+
+Screenshots captured at:
+
+```text
+C:\tmp\pulse-final-protomaps-map-check
+```
+
+Final map-verified release tag:
+
+```text
+v1.1.3-rc1
+```
