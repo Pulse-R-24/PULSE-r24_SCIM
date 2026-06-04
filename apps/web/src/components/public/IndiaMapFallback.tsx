@@ -1,22 +1,31 @@
-export function IndiaMapFallback({ pmtilesUrl }: { pmtilesUrl?: string }) {
+import { MapPinned, ServerCog } from 'lucide-react'
+
+export function IndiaMapFallback({ activeCount }: { activeCount: number }) {
   return (
-    <div className="pointer-events-none absolute inset-0 z-[1] bg-[#07101b]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_52%_48%,rgba(139,0,0,0.2),transparent_32%),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100%_100%,44px_44px,44px_44px]" />
-      <svg viewBox="0 0 760 520" className="absolute inset-0 h-full w-full opacity-90" aria-hidden="true">
-        <path
-          d="M190 84 302 30 413 82 480 145 606 188 618 235 585 283 520 302 454 362 400 464 322 470 276 370 252 252 174 184Z"
-          fill="#111827"
-          stroke="#7b8494"
-          strokeWidth="2.5"
-        />
-        <path d="M302 30 350 120 480 145 M252 252 392 250 520 302 M276 370 400 330 454 362" stroke="#475569" strokeWidth="1" opacity="0.65" />
-        <text x="325" y="125" fill="#94a3b8" fontSize="15" letterSpacing="3">DELHI</text>
-        <text x="228" y="326" fill="#94a3b8" fontSize="15" letterSpacing="3">MUMBAI</text>
-        <text x="394" y="440" fill="#94a3b8" fontSize="15" letterSpacing="3">BENGALURU</text>
-        <text x="538" y="258" fill="#94a3b8" fontSize="15" letterSpacing="3">KOLKATA</text>
-      </svg>
-      <div className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-1 text-[9px] font-bold text-slate-700">
-        {pmtilesUrl ? 'MapLibre fallback while PMTiles loads' : 'Set NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL for Protomaps basemap'}
+    <div className="relative flex h-full min-h-[360px] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-[#07101b] text-white shadow-2xl shadow-slate-950/20">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(139,0,0,0.22),transparent_34%),linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:100%_100%,42px_42px,42px_42px]" />
+      <div className="absolute inset-x-4 top-4 flex items-center justify-between rounded border border-white/10 bg-slate-950/88 px-3 py-2 backdrop-blur-md">
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-[0.24em] text-emerald-300">PULSE-R24 India City Signals</p>
+          <p suppressHydrationWarning className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-400">
+            {new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')} UTC
+          </p>
+        </div>
+        <div className="rounded border border-white/10 px-2 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-slate-300">Tiles offline</div>
+      </div>
+      <div className="relative z-10 mx-6 max-w-md border border-white/10 bg-slate-950/88 p-6 text-center shadow-2xl backdrop-blur-md">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#8b0000]/35 bg-[#8b0000]/15 text-rose-200">
+          <MapPinned className="h-6 w-6" />
+        </div>
+        <h3 className="font-editorial mt-5 text-3xl font-black leading-tight">Map tiles are not configured.</h3>
+        <p className="mt-3 text-sm leading-7 text-slate-300">
+          Set <span className="font-mono text-rose-200">NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL</span> to enable the live India map.
+        </p>
+        <div className="mt-5 grid gap-2 border-t border-white/10 pt-5 text-left text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+          <span className="flex items-center gap-2"><ServerCog className="h-4 w-4 text-emerald-300" /> Protomaps PMTiles required</span>
+          <span>{activeCount} published PULSE-R24 briefs ready for city markers</span>
+          <span>No external news feeds or paid API keys are used</span>
+        </div>
       </div>
     </div>
   )

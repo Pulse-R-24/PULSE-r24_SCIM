@@ -1,17 +1,9 @@
 import Link from 'next/link'
-import { CalendarDays, ChevronRight, X } from 'lucide-react'
+import { CalendarDays, ChevronRight } from 'lucide-react'
 import type { IndiaCitySignal } from '@/components/public/indiaMapSignals'
 import { formatPublicDate } from '@/components/public/publicUtils'
 
-export function IndiaNewsPopup({
-  signal,
-  onClose,
-  compact = false,
-}: {
-  signal: IndiaCitySignal
-  onClose?: () => void
-  compact?: boolean
-}) {
+export function IndiaMapPopup({ signal, compact = false }: { signal: IndiaCitySignal; compact?: boolean }) {
   const briefs = signal.briefs.slice(0, 5)
 
   return (
@@ -22,16 +14,9 @@ export function IndiaNewsPopup({
           <h3 className="font-editorial mt-1 text-3xl font-black leading-none">{signal.city}</h3>
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">{signal.state}</p>
         </div>
-        <div className="flex items-start gap-2">
-          <div className="border border-[#8b0000]/15 bg-white px-3 py-2 text-center">
-            <p className="text-xl font-black text-[#8b0000]">{briefs.length}</p>
-            <p className="text-[8px] font-black uppercase tracking-[0.16em] text-slate-400">Briefs</p>
-          </div>
-          {onClose && (
-            <button type="button" onClick={onClose} className="flex h-9 w-9 items-center justify-center border border-slate-200 text-slate-500 md:hidden" aria-label="Close city signal popup">
-              <X className="h-4 w-4" />
-            </button>
-          )}
+        <div className="border border-[#8b0000]/15 bg-white px-3 py-2 text-center">
+          <p className="text-xl font-black text-[#8b0000]">{signal.briefs.length}</p>
+          <p className="text-[8px] font-black uppercase tracking-[0.16em] text-slate-400">Briefs</p>
         </div>
       </div>
 

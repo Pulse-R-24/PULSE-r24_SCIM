@@ -109,14 +109,11 @@ function toBrief(report: PublicReportSummary): IndiaCityBrief {
 }
 
 export function buildIndiaCitySignals(reports: PublicReportSummary[]): IndiaCitySignal[] {
-  const matchedSlugs = new Set<string>()
-  const signals = indiaTierOneCities.map((city) => {
+  return indiaTierOneCities.map((city) => {
     const briefs = reports.filter((report) => {
       const haystack = toHaystack(report)
       return city.keywords.some((keyword) => haystack.includes(keyword))
     })
-
-    briefs.forEach((report) => matchedSlugs.add(report.slug))
 
     return {
       city: city.city,
@@ -127,18 +124,4 @@ export function buildIndiaCitySignals(reports: PublicReportSummary[]): IndiaCity
       level: getLevel(briefs.length),
     }
   })
-
-  // If reports do not contain a city keyword yet, distribute a few published
-  // briefs across major metros so the public map still previews real workflow data.
-  reports
-    .filter((report) => !matchedSlugs.has(report.slug))
-    .slice(0, 8)
-    .forEach((report, index) => {
-      const target = signals[index % Math.min(signals.length, 4)]
-      if (!target) return
-      target.briefs.push(toBrief(report))
-      target.level = getLevel(target.briefs.length)
-    })
-
-  return signals
 }

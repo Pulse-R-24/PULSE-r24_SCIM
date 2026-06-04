@@ -53,14 +53,16 @@ Reference documentation:
 
 ## Fallback Behavior
 
-If `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL` is not set, the homepage still renders a MapLibre-based India fallback layer with:
+If `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL` is not set, the homepage does not draw a fake India map, SVG map, or abstract radar surface.
 
-- dark India-focused background
-- India outline
-- Tier-1 city markers
-- published PULSE-R24 brief popups
+Instead, it shows a professional configuration fallback:
 
-The fallback is intended for local demos only and clearly indicates that the Protomaps PMTiles URL should be configured for the full basemap.
+- `Map tiles are not configured.`
+- `Set NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL to enable the live India map.`
+- count of public-safe published PULSE-R24 briefs ready for marker display
+- reminder that no external news feeds or paid API keys are used
+
+This keeps the public homepage honest until a Protomaps-compatible PMTiles file is available.
 
 ## Data Safety
 

@@ -3,107 +3,60 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Map as MapLibreMap, Marker, StyleSpecification } from 'maplibre-gl'
 import type { PublicReportSummary } from '@modules/reports/types'
-import { createIndiaCityMarkerElement, removeIndiaCityMarkers } from '@/components/public/IndiaCityMarker'
+import { createIndiaMapMarkerElement, removeIndiaMapMarkers } from '@/components/public/IndiaMapMarker'
+import { IndiaMapControls } from '@/components/public/IndiaMapControls'
 import { IndiaMapFallback } from '@/components/public/IndiaMapFallback'
 import { IndiaMapLegend } from '@/components/public/IndiaMapLegend'
-import { IndiaNewsPopup } from '@/components/public/IndiaNewsPopup'
+import { IndiaMapMobileSheet } from '@/components/public/IndiaMapMobileSheet'
+import { IndiaMapPopup } from '@/components/public/IndiaMapPopup'
 import { buildIndiaCitySignals, type IndiaCitySignal } from '@/components/public/indiaMapSignals'
 
 let pmtilesProtocolRegistered = false
 
-const fallbackIndiaGeoJson: GeoJSON.FeatureCollection = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      properties: { name: 'India' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [68.1, 23.7],
-            [69.6, 27.2],
-            [73.1, 31],
-            [77, 34.5],
-            [80.8, 30.8],
-            [88.3, 27.2],
-            [94.6, 27.6],
-            [95.2, 25],
-            [92.8, 23.2],
-            [88.1, 22.1],
-            [86.2, 20.6],
-            [84, 18.5],
-            [82, 16.3],
-            [80.4, 13],
-            [78.1, 8.2],
-            [76.2, 8],
-            [74.2, 12],
-            [72.9, 16.6],
-            [72.4, 19],
-            [70.2, 21],
-            [68.1, 23.7],
-          ],
-        ],
-      },
-    },
-  ],
-}
+const INDIA_CENTER: [number, number] = [78.6569, 22.9734]
+const INDIA_ZOOM = 3.45
 
-function createStyle(pmtilesUrl?: string): StyleSpecification {
-  if (pmtilesUrl) {
-    return {
-      version: 8,
-      glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-      sources: {
-        protomaps: {
-          type: 'vector',
-          url: `pmtiles://${pmtilesUrl}`,
-        },
-      },
-      layers: [
-        { id: 'background', type: 'background', paint: { 'background-color': '#07101b' } },
-        { id: 'earth', type: 'fill', source: 'protomaps', 'source-layer': 'earth', paint: { 'fill-color': '#0b1220' } },
-        { id: 'land', type: 'fill', source: 'protomaps', 'source-layer': 'land', paint: { 'fill-color': '#111827' } },
-        { id: 'water', type: 'fill', source: 'protomaps', 'source-layer': 'water', paint: { 'fill-color': '#061526' } },
-        {
-          id: 'boundaries',
-          type: 'line',
-          source: 'protomaps',
-          'source-layer': 'boundaries',
-          paint: { 'line-color': '#475569', 'line-width': 0.9, 'line-opacity': 0.65 },
-        },
-        {
-          id: 'roads',
-          type: 'line',
-          source: 'protomaps',
-          'source-layer': 'roads',
-          paint: { 'line-color': '#334155', 'line-width': 0.45, 'line-opacity': 0.42 },
-        },
-        {
-          id: 'places',
-          type: 'symbol',
-          source: 'protomaps',
-          'source-layer': 'places',
-          layout: {
-            'text-field': ['get', 'name'],
-            'text-size': ['interpolate', ['linear'], ['zoom'], 4, 10, 7, 13],
-            'text-font': ['Noto Sans Regular'],
-          },
-          paint: { 'text-color': '#cbd5e1', 'text-halo-color': '#07101b', 'text-halo-width': 1.2 },
-        },
-      ],
-    }
-  }
-
+function createProtomapsStyle(pmtilesUrl: string): StyleSpecification {
   return {
     version: 8,
+    glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
     sources: {
-      india: { type: 'geojson', data: fallbackIndiaGeoJson },
+      protomaps: {
+        type: 'vector',
+        url: `pmtiles://${pmtilesUrl}`,
+      },
     },
     layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': '#07101b' } },
-      { id: 'india-fill', type: 'fill', source: 'india', paint: { 'fill-color': '#111827', 'fill-opacity': 0.94 } },
-      { id: 'india-line', type: 'line', source: 'india', paint: { 'line-color': '#94a3b8', 'line-width': 1.7, 'line-opacity': 0.82 } },
+      { id: 'background', type: 'background', paint: { 'background-color': '#06111d' } },
+      { id: 'earth', type: 'fill', source: 'protomaps', 'source-layer': 'earth', paint: { 'fill-color': '#07101b' } },
+      { id: 'land', type: 'fill', source: 'protomaps', 'source-layer': 'land', paint: { 'fill-color': '#101827' } },
+      { id: 'water', type: 'fill', source: 'protomaps', 'source-layer': 'water', paint: { 'fill-color': '#03111f' } },
+      {
+        id: 'boundaries',
+        type: 'line',
+        source: 'protomaps',
+        'source-layer': 'boundaries',
+        paint: { 'line-color': '#64748b', 'line-width': 0.9, 'line-opacity': 0.72 },
+      },
+      {
+        id: 'roads',
+        type: 'line',
+        source: 'protomaps',
+        'source-layer': 'roads',
+        paint: { 'line-color': '#334155', 'line-width': 0.45, 'line-opacity': 0.36 },
+      },
+      {
+        id: 'places',
+        type: 'symbol',
+        source: 'protomaps',
+        'source-layer': 'places',
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 3, 9, 6, 12],
+          'text-font': ['Noto Sans Regular'],
+        },
+        paint: { 'text-color': '#cbd5e1', 'text-halo-color': '#06111d', 'text-halo-width': 1.2 },
+      },
     ],
   }
 }
@@ -118,15 +71,15 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
   const activeCount = signals.reduce((sum, signal) => sum + signal.briefs.length, 0)
 
   useEffect(() => {
+    if (!pmtilesUrl) return
+    const sourceUrl = pmtilesUrl
+
     let cancelled = false
     let map: MapLibreMap | null = null
 
     async function mountMap() {
       if (!mapContainerRef.current || mapRef.current) return
-      const [{ default: maplibregl }, { Protocol }] = await Promise.all([
-        import('maplibre-gl'),
-        import('pmtiles'),
-      ])
+      const [{ default: maplibregl }, { Protocol }] = await Promise.all([import('maplibre-gl'), import('pmtiles')])
       if (cancelled || !mapContainerRef.current) return
 
       if (!pmtilesProtocolRegistered) {
@@ -137,28 +90,33 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
 
       map = new maplibregl.Map({
         container: mapContainerRef.current,
-        style: createStyle(pmtilesUrl),
-        center: [78.6569, 22.9734],
-        zoom: 3.05,
+        style: createProtomapsStyle(sourceUrl),
+        center: INDIA_CENTER,
+        zoom: INDIA_ZOOM,
+        pitch: 0,
+        bearing: 0,
         minZoom: 2.8,
-        maxZoom: 7,
+        maxZoom: 8,
         maxBounds: [
-          [66, 5.5],
-          [98, 37.5],
+          [62, 4],
+          [100, 39],
         ],
         attributionControl: false,
       })
       mapRef.current = map
-      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right')
-      map.addControl(new maplibregl.AttributionControl({ compact: true, customAttribution: 'Protomaps PMTiles / MapLibre / Published reports only' }), 'bottom-left')
+      map.addControl(
+        new maplibregl.AttributionControl({
+          compact: true,
+          customAttribution: 'Protomaps PMTiles / MapLibre / Published reports only',
+        }),
+        'bottom-left',
+      )
 
       markerRef.current = signals.map((signal) => {
-        const element = createIndiaCityMarkerElement(signal)
+        const element = createIndiaMapMarkerElement(signal)
         element.addEventListener('mouseenter', () => setSelectedSignal(signal))
         element.addEventListener('click', () => setSelectedSignal(signal))
-        return new maplibregl.Marker({ element, anchor: 'center' })
-          .setLngLat([signal.longitude, signal.latitude])
-          .addTo(map!)
+        return new maplibregl.Marker({ element, anchor: 'center' }).setLngLat([signal.longitude, signal.latitude]).addTo(map!)
       })
     }
 
@@ -166,7 +124,7 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
 
     return () => {
       cancelled = true
-      removeIndiaCityMarkers(markerRef.current)
+      removeIndiaMapMarkers(markerRef.current)
       markerRef.current = []
       if (map) {
         map.remove()
@@ -175,32 +133,30 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
     }
   }, [pmtilesUrl, signals])
 
-  return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#07101b] shadow-2xl shadow-slate-950/20">
-      <IndiaMapFallback pmtilesUrl={pmtilesUrl} />
-      <div ref={mapContainerRef} className="relative z-[2] h-full w-full" aria-label="India Protomaps city signal map" />
+  if (!pmtilesUrl) {
+    return <IndiaMapFallback activeCount={activeCount} />
+  }
 
-      <div className="absolute left-4 top-4 z-10 rounded-lg border border-slate-700/70 bg-slate-950/90 p-3">
-        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">
-          <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-          India City Signals
-        </div>
-        <p className="mt-1 text-[10px] font-semibold uppercase text-slate-500">
-          {activeCount} Published PULSE-R24 Briefs
-        </p>
-      </div>
+  return (
+    <div className="relative h-full w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#06111d] shadow-2xl shadow-slate-950/20">
+      <div ref={mapContainerRef} className="h-full w-full" aria-label="PULSE-R24 India Protomaps city signal map" />
+
+      <IndiaMapControls
+        onZoomIn={() => mapRef.current?.zoomIn()}
+        onZoomOut={() => mapRef.current?.zoomOut()}
+        onReset={() => mapRef.current?.easeTo({ center: INDIA_CENTER, zoom: INDIA_ZOOM, pitch: 0, bearing: 0 })}
+        onSet2d={() => mapRef.current?.easeTo({ pitch: 0, bearing: 0 })}
+        onSet3d={() => mapRef.current?.easeTo({ pitch: 35, bearing: 0 })}
+      />
 
       <IndiaMapLegend />
 
       {selectedSignal && (
         <>
-          <div className="absolute right-4 top-4 z-20 hidden md:block">
-            <IndiaNewsPopup signal={selectedSignal} />
+          <div className="absolute right-4 top-20 z-30 hidden md:block">
+            <IndiaMapPopup signal={selectedSignal} />
           </div>
-          <div className="fixed inset-x-0 bottom-0 z-[900] border-t border-slate-200 bg-white p-4 shadow-[0_-18px_50px_rgba(15,23,42,0.22)] md:hidden">
-            <div className="mx-auto mb-3 h-1 w-12 rounded-full bg-slate-200" />
-            <IndiaNewsPopup signal={selectedSignal} onClose={() => setSelectedSignal(null)} compact />
-          </div>
+          <IndiaMapMobileSheet signal={selectedSignal} onClose={() => setSelectedSignal(null)} />
         </>
       )}
 
@@ -217,12 +173,10 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
           top: 0;
           will-change: transform;
         }
-        .maplibregl-ctrl-bottom-left,
-        .maplibregl-ctrl-bottom-right {
-          z-index: 10;
+        .maplibregl-ctrl-bottom-left {
+          z-index: 20;
         }
-        .maplibregl-ctrl-attrib,
-        .maplibregl-ctrl-group {
+        .maplibregl-ctrl-attrib {
           border: 1px solid rgba(148, 163, 184, 0.35) !important;
           background: rgba(2, 6, 23, 0.9) !important;
           color: #cbd5e1 !important;
@@ -231,8 +185,25 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
         .maplibregl-ctrl-attrib a {
           color: #e2e8f0 !important;
         }
-        .maplibregl-ctrl button {
-          filter: invert(1);
+        .map-control-mode,
+        .map-control-icon {
+          display: inline-flex;
+          height: 1.75rem;
+          min-width: 1.75rem;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(15, 23, 42, 0.76);
+          padding: 0 0.45rem;
+          color: #e2e8f0;
+          font-size: 0.62rem;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          transition: background 160ms ease;
+        }
+        .map-control-mode:hover,
+        .map-control-icon:hover {
+          background: rgba(139, 0, 0, 0.55);
         }
         .pulse-maplibre-marker {
           position: absolute;

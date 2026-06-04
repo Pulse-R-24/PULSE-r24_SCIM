@@ -1,12 +1,12 @@
 export function IndiaMapLegend() {
   return (
-    <div className="absolute bottom-4 left-4 z-10 hidden border border-white/10 bg-slate-950/90 p-3 text-white shadow-2xl md:block">
-      <p className="text-[9px] font-black uppercase tracking-[0.22em] text-slate-400">Published Brief Signals</p>
-      <div className="mt-2 grid gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-300">
+    <div className="absolute inset-x-4 bottom-4 z-20 hidden items-center justify-between gap-4 rounded border border-white/10 bg-slate-950/88 px-4 py-2 text-white shadow-2xl backdrop-blur-md md:flex">
+      <p className="text-[9px] font-black uppercase tracking-[0.22em] text-slate-400">Published PULSE-R24 Brief</p>
+      <div className="flex flex-wrap items-center gap-4 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-300">
         <LegendItem color="bg-slate-500" label="No current brief" />
-        <LegendItem color="bg-emerald-400" label="1-2 briefs" />
-        <LegendItem color="bg-amber-400" label="3-5 briefs" />
-        <LegendItem color="bg-[#8b0000]" label="6+ briefs" />
+        <LegendItem color="bg-emerald-400" label="Low" />
+        <LegendItem color="bg-amber-400" label="Elevated" />
+        <LegendItem color="bg-[#8b0000]" label="High" />
       </div>
     </div>
   )

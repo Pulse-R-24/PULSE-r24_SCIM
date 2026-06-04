@@ -8,7 +8,7 @@ const levelClass: Record<IndiaSignalLevel, string> = {
   high: 'pulse-maplibre-marker-high',
 }
 
-export function createIndiaCityMarkerElement(signal: IndiaCitySignal) {
+export function createIndiaMapMarkerElement(signal: IndiaCitySignal) {
   const element = document.createElement('button')
   element.type = 'button'
   element.className = `pulse-maplibre-marker ${levelClass[signal.level]}`
@@ -21,6 +21,6 @@ export function createIndiaCityMarkerElement(signal: IndiaCitySignal) {
   return element
 }
 
-export function removeIndiaCityMarkers(markers: Marker[]) {
+export function removeIndiaMapMarkers(markers: Marker[]) {
   markers.forEach((marker) => marker.remove())
 }
