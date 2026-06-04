@@ -1,10 +1,11 @@
-# v1.1.0-rc1 Production Gaps
+# v1.1.4-rc1 Production Gaps
 
-This document captures the production-readiness assessment for the public-first `v1.1.0-rc1` release candidate. Feature development is frozen; these items are deployment, reliability, security, and operational hardening concerns.
+This document captures the production-readiness assessment for the public-first `v1.1.4-rc1` release candidate. Feature development is frozen; these items are deployment, reliability, security, and operational hardening concerns.
 
 ## Current Strengths
 
 - Public-first PULSE-R24 website layer is implemented.
+- Public homepage Protomaps India map is implemented and verified with Supabase-hosted PMTiles.
 - Public routes exist for `/`, `/news`, `/news/[slug]`, `/category/[slug]`, `/latest`, and `/public-search`.
 - Public pages show only `PUBLISHED` non-deleted reports.
 - `DRAFT`, `UNDER_REVIEW`, `CHANGES_REQUESTED`, `APPROVED`, `REJECTED`, and `ARCHIVED` reports are hidden publicly.
@@ -29,6 +30,7 @@ This document captures the production-readiness assessment for the public-first 
 - Docker build/compose validation was deferred on the local Windows machine because Docker Desktop caused memory pressure; rerun Docker validation on a machine with sufficient RAM or in CI/CD.
 - Rate limiting is not implemented at the application layer.
 - Public routes should be tested behind the final production CDN/proxy cache behavior before stakeholder publication.
+- PMTiles public-object delivery should be tested behind the final production CDN/proxy and monitored for bandwidth usage.
 - File upload size limits are not enforced at every layer.
 - Initial Playwright browser smoke tests exist, but comprehensive browser/e2e coverage is not complete yet.
 - Contract tests validate code paths statically but do not replace database-backed integration tests.
@@ -65,6 +67,7 @@ This document captures the production-readiness assessment for the public-first 
 - Supabase Postgres is appropriate for the next deployment validation phase, but connection pooling, migration policy, and backup/restore rehearsal still need production review.
 - Public search is simple relational keyword/filter search and may need indexed query tuning as published report volume grows.
 - Public pages are dynamic to avoid build-time database coupling; deployment should monitor latency and database connection usage.
+- Public PMTiles loading depends on Supabase Storage public object availability and browser range-request behavior.
 - Analytics are computed from live queries and may require materialized summaries for larger datasets.
 - Activity and workflow history can grow quickly and may need pagination/retention policies.
 - File metadata and storage lifecycle policies should be defined before large evidence uploads.
@@ -86,9 +89,9 @@ This document captures the production-readiness assessment for the public-first 
 - Run dependency audit and patch moderate/high vulnerabilities before public exposure.
 - Verify public pages never expose private evidence URLs, workflow notes, audit records, notifications, activity metadata, or internal user IDs after each schema change.
 
-## v1.1.0-rc1 Decision
+## v1.1.4-rc1 Decision
 
-`v1.1.0-rc1` is suitable for:
+`v1.1.4-rc1` is suitable for:
 
 - Stakeholder demonstration
 - Manual public website visual review
@@ -98,7 +101,7 @@ This document captures the production-readiness assessment for the public-first 
 - Architecture review
 - Controlled pilot testing with demo data
 
-`v1.1.0-rc1` is not yet suitable for:
+`v1.1.4-rc1` is not yet suitable for:
 
 - Public internet exposure without a reverse proxy and rate limits
 - Production evidence storage without storage policy review

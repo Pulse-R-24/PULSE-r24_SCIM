@@ -1,9 +1,9 @@
-# PULSE-r24_SCIM v1.1.0-rc1 Release Report
+# PULSE-r24_SCIM v1.1.4-rc1 Release Report
 
 ## Release Identity
 
 - Release: Public-first RC release candidate
-- Release tag: `v1.1.0-rc1`
+- Release tag: `v1.1.4-rc1`
 - Previous validated runtime tag: `v1.0.1-rc1`
 - Branch: `main`
 - Repository: `https://github.com/Pulse-R-24/PULSE-r24_SCIM.git`
@@ -11,7 +11,7 @@
 
 ## Release Summary
 
-`v1.1.0-rc1` adds the public-first PULSE-R24 news and intelligence website layer on top of the previously validated private workflow platform.
+`v1.1.4-rc1` adds the public-first PULSE-R24 news and intelligence website layer on top of the previously validated private workflow platform.
 
 The main site now begins at `/` as a public PULSE-R24 reader experience. The staff dashboard remains protected under `/dashboard` and is used by analysts, editors, reviewers, publishers, and admins.
 
@@ -25,7 +25,7 @@ Public website:
 - Public category listing
 - Public latest page
 - Public-only search page
-- Public navbar, footer, hero, ticker, issue header, article cards, article detail layout, and threat-map inspired visual section
+- Public navbar, footer, hero, ticker, issue header, article cards, article detail layout, and Protomaps India map
 - Public-safe report DTO layer
 - Public visibility guardrail tests
 
@@ -182,7 +182,7 @@ Previous RC1 runtime validation reference:
 
 ## Deployment Readiness Assessment
 
-`v1.1.0-rc1` is ready for:
+`v1.1.4-rc1` is ready for:
 
 - Stakeholder demonstration
 - Manual public website visual review
@@ -249,13 +249,13 @@ Future AI/OSINT work must be developed in separate feature branches and must not
 Target tag:
 
 ```text
-v1.1.0-rc1
+v1.1.4-rc1
 ```
 
 Remote verification:
 
 ```bash
-git ls-remote --tags origin v1.1.0-rc1
+git ls-remote --tags origin v1.1.4-rc1
 ```
 
 ## v1.1.3-rc1 Map Verification Addendum

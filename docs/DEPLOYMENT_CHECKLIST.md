@@ -1,10 +1,10 @@
 # RC1 Deployment Checklist
 
-Release: `PULSE-r24_SCIM v1.0.1-rc1`
+Release: `PULSE-r24_SCIM v1.1.4-rc1`
 
-Validated tag: `v1.0.1-rc1`
+Validated tag: `v1.1.4-rc1`
 
-Validated commit: `8e646b1e07a4bb295024fbf70f934ba9a7285965`
+Validated commit: `b552e01ad4cc14be81f8ad2174f83e4aec8faedb`
 
 Repository: `https://github.com/Pulse-R-24/PULSE-r24_SCIM`
 
@@ -12,9 +12,9 @@ Repository: `https://github.com/Pulse-R-24/PULSE-r24_SCIM`
 
 - [x] Local RC1 validation completed.
 - [x] Remote `main` branch verified.
-- [x] Remote tag `v1.0.1-rc1` verified.
-- [x] Tag points to validated runtime fix commit: `8e646b1e07a4bb295024fbf70f934ba9a7285965`.
-- [ ] GitHub Release published for `v1.0.1-rc1`.
+- [x] Remote tag `v1.1.4-rc1` verified.
+- [x] Tag points to validated runtime fix commit: `b552e01ad4cc14be81f8ad2174f83e4aec8faedb`.
+- [ ] GitHub Release published for `v1.1.4-rc1`.
 
 ## 2. GitHub Release
 
@@ -30,8 +30,8 @@ This is not a project failure. The remote tag exists and can be published as a G
 1. Open the GitHub repository.
 2. Go to `Releases`.
 3. Select `Draft a new release`.
-4. Choose existing tag `v1.0.1-rc1`.
-5. Set release title to `PULSE-r24_SCIM v1.0.1-rc1`.
+4. Choose existing tag `v1.1.4-rc1`.
+5. Set release title to `PULSE-r24_SCIM v1.1.4-rc1`.
 6. Mark the release as `Pre-release`.
 7. Use `docs/RC1_RELEASE_REPORT.md` as the release note source.
 8. Publish the release.
@@ -41,9 +41,9 @@ This is not a project failure. The remote tag exists and can be published as a G
 Run from an authenticated environment:
 
 ```bash
-gh release create v1.0.1-rc1 \
+gh release create v1.1.4-rc1 \
   --repo Pulse-R-24/PULSE-r24_SCIM \
-  --title "PULSE-r24_SCIM v1.0.1-rc1" \
+  --title "PULSE-r24_SCIM v1.1.4-rc1" \
   --notes-file docs/RC1_RELEASE_REPORT.md \
   --prerelease
 ```
@@ -51,7 +51,7 @@ gh release create v1.0.1-rc1 \
 Verify:
 
 ```bash
-gh release view v1.0.1-rc1 --repo Pulse-R-24/PULSE-r24_SCIM
+gh release view v1.1.4-rc1 --repo Pulse-R-24/PULSE-r24_SCIM
 ```
 
 ## 3. Required Environment Variables
@@ -65,6 +65,7 @@ Required for RC1 runtime:
 - `NEXTAUTH_URL` - canonical app URL, such as `http://localhost:3000` or the production domain.
 - `SUPABASE_URL` - Supabase project URL.
 - `SUPABASE_SERVICE_ROLE_KEY` - server-side key for private evidence storage operations.
+- `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL` - public Supabase Storage URL for the homepage Protomaps India map.
 
 Recommended or optional:
 
@@ -93,6 +94,7 @@ Storage note:
 
 - Supabase Storage private bucket `evidence` must exist before evidence upload testing.
 - The bucket name is fixed in RC1 and is not controlled by an environment variable.
+- Supabase Storage public bucket `maps` must contain the lightweight PMTiles file, for example `india_z7.pmtiles`, before public map smoke testing.
 
 ## 4. Pre-Deployment Validation
 
@@ -146,6 +148,7 @@ Set the RC1 required variables in Vercel project settings:
 - `NEXTAUTH_URL`
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL`
 - `NODE_ENV=production`
 - `LOG_LEVEL=info`
 
@@ -206,6 +209,7 @@ Set:
 - `NEXTAUTH_URL`
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL`
 - `NODE_ENV=production`
 - `LOG_LEVEL=info`
 
@@ -261,6 +265,7 @@ Set:
 - `NEXTAUTH_URL`
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL`
 - `NODE_ENV=production`
 - `LOG_LEVEL=info`
 
@@ -292,6 +297,9 @@ Use a clean browser session.
 
 - [ ] Login page loads at `/auth/signin`.
 - [ ] `/api/auth/csrf` returns JSON.
+- [ ] Public homepage renders the real Protomaps India map.
+- [ ] Public homepage does not show `Map tiles are not configured`.
+- [ ] Eight Tier-1 city markers render.
 - [ ] Analyst can log in.
 - [ ] Dashboard loads at `/dashboard`.
 - [ ] Reports load.
@@ -321,12 +329,12 @@ Use a clean browser session.
 Use the stable RC1 tag as the restore point:
 
 ```bash
-git checkout v1.0.1-rc1
+git checkout v1.1.4-rc1
 ```
 
 For hosted deployments:
 
-1. Redeploy the `v1.0.1-rc1` tag.
+1. Redeploy the `v1.1.4-rc1` tag.
 2. Restore the Supabase database from the latest known-good backup.
 3. Verify `/auth/signin`, `/api/auth/csrf`, and `/dashboard`.
 

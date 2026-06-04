@@ -1,12 +1,12 @@
-# v1.1.0-rc1 Screenshot Checklist
+# v1.1.4-rc1 Screenshot Checklist
 
-Release: `PULSE-r24_SCIM v1.1.0-rc1`
+Release: `PULSE-r24_SCIM v1.1.4-rc1`
 
 Goal: capture a clean stakeholder-ready screenshot set showing both the public PULSE-R24 website and the protected private dashboard workflow.
 
 ## Screenshot Standards
 
-- [ ] Use the deployed `v1.1.0-rc1` environment or a clean local run.
+- [ ] Use the deployed `v1.1.4-rc1` environment or a clean local run.
 - [ ] Use the NEW PULSE-r24_SCIM Supabase project.
 - [ ] Use a fresh browser profile or private window.
 - [ ] Hide browser bookmarks and unrelated tabs.
@@ -51,10 +51,24 @@ Use a consistent naming pattern:
   - Public navbar and staff login link.
   - Hero section.
   - Live published ticker style.
-  - Threat-map inspired visual section.
+  - Real Protomaps India map with Tier-1 city markers.
   - Published report cards or public empty state.
   - Footer.
 - Suggested file: `01-public-homepage.png`
+
+### 1a. Public India Map
+
+- Route: `/`
+- Account: not logged in
+- Capture:
+  - Map closeup.
+  - One marker popup.
+  - Mobile bottom sheet if mobile screenshots are in scope.
+  - Confirm fallback text `Map tiles are not configured` is not visible when PMTiles is configured.
+- Suggested files:
+  - `01a-public-map-closeup.png`
+  - `01b-public-map-marker-popup.png`
+  - `01c-public-map-mobile-bottom-sheet.png`
 
 ### 2. News Listing
 
@@ -266,5 +280,5 @@ Use a consistent naming pattern:
 - [ ] No secrets are visible.
 - [ ] No browser error overlays are visible.
 - [ ] No localhost-only caveats are visible unless intentionally documenting local setup.
-- [ ] Screenshots match the validated `v1.1.0-rc1` scope.
+- [ ] Screenshots match the validated `v1.1.4-rc1` scope.
 - [ ] Screenshots do not imply AI, OSINT, RSS, realtime, vector search, semantic search, or threat correlation features exist.

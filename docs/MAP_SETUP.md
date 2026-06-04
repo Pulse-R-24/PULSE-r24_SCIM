@@ -11,7 +11,7 @@ No RSS, AI, OSINT automation, realtime feed, threat correlation, Redis, or risk 
 Set this public environment variable when a Protomaps-compatible PMTiles file is available:
 
 ```env
-NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL=https://your-host.example/maps/india.pmtiles
+NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL=https://your-host.example/maps/india_z7.pmtiles
 ```
 
 The value is public because browser-side MapLibre reads the PMTiles file directly.
@@ -32,7 +32,7 @@ Supabase Dashboard -> Storage -> New bucket -> maps -> Public
 Step 2: upload the generated map file.
 
 ```text
-india.pmtiles
+india_z7.pmtiles
 ```
 
 Step 3: copy the public URL.
@@ -40,13 +40,13 @@ Step 3: copy the public URL.
 It should look like:
 
 ```text
-https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/maps/india.pmtiles
+https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/maps/india_z7.pmtiles
 ```
 
 Step 4: add the URL to `.env`.
 
 ```env
-NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL="https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/maps/india.pmtiles"
+NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL="https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/maps/india_z7.pmtiles"
 ```
 
 Step 5: restart the dev server so Next.js reloads the public environment variable.
@@ -62,13 +62,13 @@ Large PMTiles files must not be committed to this repository.
 For local development, place a generated India PMTiles file in a public/static hosting location, for example:
 
 ```text
-apps/web/public/maps/india.pmtiles
+apps/web/public/maps/india_z7.pmtiles
 ```
 
 Then set:
 
 ```env
-NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL=/maps/india.pmtiles
+NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL=/maps/india_z7.pmtiles
 ```
 
 Only use this for reasonably sized local/demo files. For production, host the file in object storage or CDN with HTTP range-request support.
@@ -92,7 +92,7 @@ Approximate India bounds:
 Example extraction command:
 
 ```bash
-pmtiles extract world.pmtiles india.pmtiles --bounds "68.0,6.0,98.0,38.0"
+pmtiles extract world.pmtiles india_z7.pmtiles --bounds "68.0,6.0,98.0,38.0" --maxzoom=7
 ```
 
 Do not commit `.pmtiles` files. They are intentionally ignored by `.gitignore`.

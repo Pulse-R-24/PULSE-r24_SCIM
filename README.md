@@ -2,7 +2,7 @@
 
 Clean rebuild of the PULSE-R24 intelligence report management and public news/intelligence platform.
 
-Current release candidate: `v1.1.0-rc1`.
+Current release candidate: `v1.1.4-rc1`.
 
 ## Product Structure
 
@@ -54,6 +54,8 @@ Open `http://localhost:3000` for the public PULSE-R24 website.
 
 Open `http://localhost:3000/auth/signin` for staff login.
 
+For the public India map, set `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL` to the public Supabase Storage PMTiles URL before starting the web app. The validated RC baseline uses the public `maps` bucket and `india_z7.pmtiles`.
+
 ## Public Visibility Rules
 
 Public pages show only reports with workflow status `PUBLISHED` and no soft-delete timestamp.
@@ -104,6 +106,7 @@ npm run seed:bootstrap
 Implemented for demo/testing:
 
 - Public PULSE-R24 news/intelligence portal
+- Real Protomaps/MapLibre India homepage map backed by Supabase-hosted PMTiles
 - Public published-report browsing, latest page, category pages, and public search
 - Dashboard command center
 - Report editor and draft workflow

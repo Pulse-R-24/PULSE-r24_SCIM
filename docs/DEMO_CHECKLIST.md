@@ -1,16 +1,17 @@
-# v1.1.0-rc1 Stakeholder Demo Checklist
+# v1.1.4-rc1 Stakeholder Demo Checklist
 
-Release: `PULSE-r24_SCIM v1.1.0-rc1`
+Release: `PULSE-r24_SCIM v1.1.4-rc1`
 
 Purpose: demonstrate the public-first PULSE-R24 reader experience and the protected staff workflow that publishes reports to the public website.
 
 ## 1. Pre-Demo Setup
 
-- [ ] Confirm the deployment is running the `v1.1.0-rc1` tag.
+- [ ] Confirm the deployment is running the `v1.1.4-rc1` tag.
 - [ ] Confirm the app is connected to the NEW PULSE-r24_SCIM Supabase project.
 - [ ] Confirm the old PLUSE-R24 Supabase project is not used.
 - [ ] Confirm Supabase Storage private bucket `evidence` exists.
 - [ ] Confirm `.env` or platform secrets are configured.
+- [ ] Confirm `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL` is configured for the public India map.
 - [ ] Confirm seed data has been applied with `npm run seed:bootstrap`.
 - [ ] Confirm `/` loads without login.
 - [ ] Confirm `/news` loads without login.
@@ -46,6 +47,8 @@ Without logging in:
 
 - [ ] Open `/` and show the public homepage.
 - [ ] Show PULSE-R24 masthead, public navbar, hero, ticker, public report cards, and footer.
+- [ ] Show the real Protomaps India map with Tier-1 city markers.
+- [ ] Click a city marker and show the published-brief popup.
 - [ ] Open `/news` and show published report listing.
 - [ ] Open `/latest` and show latest published reports.
 - [ ] Open `/public-search` and search public published reports.
@@ -56,6 +59,7 @@ Expected result:
 
 - Public pages load without authentication.
 - Only `PUBLISHED` reports appear.
+- Protomaps map loads from the configured public PMTiles URL.
 - Private dashboard links are limited to staff login.
 - Private evidence/workflow/audit data is not visible.
 
@@ -196,7 +200,7 @@ Final runtime validation reference:
 - [ ] Supabase Storage stores private evidence uploads.
 - [ ] Public report DTOs expose only safe reader-facing fields.
 - [ ] Private evidence does not become public article media.
-- [ ] `v1.1.0-rc1` is suitable for demonstration and deployment testing.
+- [ ] `v1.1.4-rc1` is suitable for demonstration and deployment testing.
 
 ## 12. Known Demo Limitations
 
