@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const path = require('path')
+const dotenv = require('dotenv')
+
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+dotenv.config({ path: path.resolve(__dirname, '.env.local'), override: true })
 
 module.exports = {
   reactStrictMode: true,

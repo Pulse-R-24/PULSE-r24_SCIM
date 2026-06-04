@@ -77,6 +77,13 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
   }, [])
 
   useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return
+    console.info(
+      `[PULSE-R24 map] NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL is ${pmtilesUrl ? 'defined' : 'undefined'}`,
+    )
+  }, [pmtilesUrl])
+
+  useEffect(() => {
     if (!mounted || !pmtilesUrl) return
     const sourceUrl = pmtilesUrl
 
