@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { PublicIssueHeader } from '@/components/public/PublicIssueHeader'
 import type { PublicReportSummary } from '@modules/reports/types'
-import { PublicThreatMap } from '@/components/public/PublicThreatMap'
+import { IndiaLiveNewsMap } from '@/components/public/IndiaLiveNewsMap'
 
 export function PublicHero({ reports }: { reports: PublicReportSummary[] }) {
   return (
@@ -40,7 +40,7 @@ export function PublicHero({ reports }: { reports: PublicReportSummary[] }) {
         </div>
 
         <div className="relative flex min-h-[420px] items-center justify-center lg:min-h-[520px]">
-          <PublicThreatMap reports={reports} compact />
+          <IndiaLiveNewsMap reports={reports} compact />
         </div>
       </div>
     </section>
