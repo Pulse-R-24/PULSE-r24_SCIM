@@ -10,6 +10,7 @@ import { IndiaMapLegend } from '@/components/public/IndiaMapLegend'
 import { IndiaMapMobileSheet } from '@/components/public/IndiaMapMobileSheet'
 import { IndiaMapPopup } from '@/components/public/IndiaMapPopup'
 import { buildIndiaCitySignals, type IndiaCitySignal } from '@/components/public/indiaMapSignals'
+import { IndiaMapLoading } from '@/components/public/IndiaMapLoading'
 
 let pmtilesProtocolRegistered = false
 
@@ -66,12 +67,17 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
   const mapRef = useRef<MapLibreMap | null>(null)
   const markerRef = useRef<Marker[]>([])
   const [selectedSignal, setSelectedSignal] = useState<IndiaCitySignal | null>(null)
+  const [mounted, setMounted] = useState(false)
   const pmtilesUrl = process.env.NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL?.trim()
   const signals = useMemo(() => buildIndiaCitySignals(reports), [reports])
   const activeCount = signals.reduce((sum, signal) => sum + signal.briefs.length, 0)
 
   useEffect(() => {
-    if (!pmtilesUrl) return
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted || !pmtilesUrl) return
     const sourceUrl = pmtilesUrl
 
     let cancelled = false
@@ -131,7 +137,11 @@ export function IndiaProtomapsMap({ reports }: { reports: PublicReportSummary[] 
         mapRef.current = null
       }
     }
-  }, [pmtilesUrl, signals])
+  }, [mounted, pmtilesUrl, signals])
+
+  if (!mounted) {
+    return <IndiaMapLoading />
+  }
 
   if (!pmtilesUrl) {
     return <IndiaMapFallback activeCount={activeCount} />
