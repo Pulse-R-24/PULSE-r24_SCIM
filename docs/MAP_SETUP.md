@@ -17,6 +17,44 @@ NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL=https://your-host.example/maps/india.pmtiles
 The value is public because browser-side MapLibre reads the PMTiles file directly.
 Do not put secrets or API keys in this value.
 
+## Supabase Storage Option
+
+For the current PULSE-R24 setup, the recommended demo path is a separate public Supabase Storage bucket named `maps`.
+
+Do not upload map files to the private `evidence` bucket. Evidence storage remains private. The `maps` bucket is intentionally public because browser-side MapLibre must fetch the PMTiles file directly.
+
+Step 1: create a public bucket.
+
+```text
+Supabase Dashboard -> Storage -> New bucket -> maps -> Public
+```
+
+Step 2: upload the generated map file.
+
+```text
+india.pmtiles
+```
+
+Step 3: copy the public URL.
+
+It should look like:
+
+```text
+https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/maps/india.pmtiles
+```
+
+Step 4: add the URL to `.env`.
+
+```env
+NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL="https://YOUR_PROJECT_REF.supabase.co/storage/v1/object/public/maps/india.pmtiles"
+```
+
+Step 5: restart the dev server so Next.js reloads the public environment variable.
+
+```bash
+npm run dev
+```
+
 ## Local PMTiles Option
 
 Large PMTiles files must not be committed to this repository.
@@ -44,6 +82,20 @@ Recommended Protomaps workflow:
 3. Host the `.pmtiles` file somewhere browser-accessible.
 4. Confirm the host supports HTTP range requests.
 5. Set `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL`.
+
+Approximate India bounds:
+
+```text
+68.0,6.0,98.0,38.0
+```
+
+Example extraction command:
+
+```bash
+pmtiles extract world.pmtiles india.pmtiles --bounds "68.0,6.0,98.0,38.0"
+```
+
+Do not commit `.pmtiles` files. They are intentionally ignored by `.gitignore`.
 
 Reference documentation:
 

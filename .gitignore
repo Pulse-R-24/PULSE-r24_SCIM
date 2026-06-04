@@ -18,3 +18,4 @@ blob-report/
 *.db-journal
 *.sqlite
 *.sqlite3
+*.pmtiles
