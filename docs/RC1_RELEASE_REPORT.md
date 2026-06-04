@@ -286,3 +286,32 @@ Final map-verified release tag:
 ```text
 v1.1.3-rc1
 ```
+
+## v1.1.4-rc1 PMTiles Env Loading Addendum
+
+The PMTiles environment-loading issue was fixed and revalidated.
+
+Validated results:
+
+- Root `.env` is loaded for the `@pulse-r24/web` workspace.
+- `NEXT_PUBLIC_PROTOMAPS_PM_TILES_URL` resolves without manually exporting it before `npm run dev`.
+- Real India Protomaps map renders from the Supabase PMTiles URL.
+- `8` Tier-1 city markers render.
+- Marker popup works on desktop.
+- Mobile map renders.
+- Mobile bottom sheet works.
+- Fallback appears only when the PMTiles URL is missing or blank.
+- No React hydration warnings were observed.
+- No console errors were observed.
+
+Final screenshots captured at:
+
+```text
+C:\tmp\pulse-v1.1.4-protomaps-final
+```
+
+Final PMTiles env-loading release tag:
+
+```text
+v1.1.4-rc1
+```
